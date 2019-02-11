@@ -33,5 +33,12 @@ Strings are null-terminated (The null characters is counted in the block size fi
 | 3 | string | variable | Project title / Comment |
 | 5 | uint16_t | 2 bytes | Encryption / Security bits configuration |
 | 8 | uint16_t | 2 bytes | Checksum (file or bitstream?) |
-| 17 | binary | constant for one device type | Programming data |
+| 17 | uint8_t[] | constant for one device type | Programming data |
 
+## Block type: Programming data
+
+| Size | Type | Meaning |
+| -- | -- | -- |
+| 4 bytes | uint32_t (big endian) | Target address to which to program the data to in the target device |
+| 4 bytes | uint32_t (big endian) | Number of bits to program |
+| remaining block | uint8_t[] | Bitstream |
