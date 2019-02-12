@@ -6,17 +6,28 @@ BitsPerProductTerm = 88
 
 
 def generateTablesForProductTerms(LABCount):
-    html = "<table id=\"product-terms\">\n<tbody>\n"
+    html = "Bits 0 through "+str(LABCount*MacrocellsPerLAB*ProductTermsPerMacrocell*BitsPerProductTerm-1)+" configure the product terms.\n<br/><br/>\n"
+
+    html += "<table id=\"product-terms\">\n<tbody>\n"
+
+    offset = 0
 
     for lab in range(LABCount):
-        html += "<tr><td rowspan=" + str(MacrocellsPerLAB*ProductTermsPerMacrocell) + ">LAB</td>\n"
+        labChar = chr(ord('A') + lab)
+        labString = "LAB "+labChar
+        html += "<tr><td rowspan=" + str(MacrocellsPerLAB*ProductTermsPerMacrocell) + ">"+labString+"</td>\n"
         for macrocell in range(MacrocellsPerLAB):
-            html += "<td rowspan=" + str(ProductTermsPerMacrocell) + ">Macrocell</td>\n"
-            for orGate in range(ProductTermsPerMacrocell):
-                if orGate > 0:
+            macrocellIndex = (lab * MacrocellsPerLAB) + macrocell
+            s = "Macrocell "+str(macrocellIndex+1)
+            html += "<td rowspan=" + str(ProductTermsPerMacrocell) + " title=\""+s+", which lies in "+labString+"\">"+s+"</td>\n"
+            for pt in range(ProductTermsPerMacrocell):
+                if pt > 0:
                     html += "<tr>"
+                ptString = str(pt+1)
+                html += "<td title=\"Product term "+ptString+"\">PT"+ptString+"</td>"
                 for bit in range(BitsPerProductTerm):
-                    html += "<td alt=\"Bit "+str(bit)+"\">P</td>"
+                    html += "<td title=\"Bit "+str(offset+bit)+"\">P</td>"
+                offset += BitsPerProductTerm
                 html += "</tr>\n"
 
     html += "</tbody>\n</table>\n"
