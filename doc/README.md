@@ -39,6 +39,7 @@ Strings are null-terminated (The null characters is counted in the block size fi
 
 | Size | Type | Meaning |
 | -- | -- | -- |
-| 4 bytes | uint32_t (big endian) | Target address to which to program the data to in the target device |
-| 4 bytes | uint32_t (big endian) | Number of bits to program |
+| 6 bytes | ? | 0x00 00 00 |
+| 4 bytes | uint32_t | Number of bits to program |
+| 2 bytes | ? | 0x01 00 |
 | remaining block | uint8_t[] | Bitstream |
