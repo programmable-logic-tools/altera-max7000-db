@@ -3,6 +3,7 @@
 MacrocellsPerLAB = 16
 ProductTermsPerMacrocell = 5
 BitsPerProductTerm = 88
+GlobalSignalsPerLAB = 36
 
 
 def generateHTMLForProductTerms(LABCount):
@@ -63,7 +64,16 @@ def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
 
 
 def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
-    return ("", 0)
+
+    html = "<h2>PIA-to-LAB routing configuration(?)</h2>\n"
+    html += "Every LAB can use "+str(GlobalSignalsPerLAB)+" global signals by routing them to the LAB from the PIA.<br/>\n"
+    html += "A global signal is selected by enabling the corresponding switch/multiplexer. A '1' disables a PIA signal, a '0' enables it.<br/>\n"
+    html += "Caveat: Enabling multiple switches for one LAB signal is forbidden and may damage the device.<br/>\n"
+    bitCount = LABCount * GlobalSignalsPerLAB * PIAtoLABmuxCount
+    html += "For every LAB signal there are "+str(PIAtoLABmuxCount)+" choices. With one bit per choice this makes for "+str(bitCount)+" bits in total for PIA to LAB routing configuration.<br/>\n"
+    html += "Assuming that every switch/multiplexer selects a different PIA signal, a maximum of "+str(GlobalSignalsPerLAB*PIAtoLABmuxCount)+" PIA signals are routable to a LAB.<br/>\n" 
+
+    return (html, bitCount)
 
 
 def generateHTMLForIOConfiguration(IOCount, bitOffset):
