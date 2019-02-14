@@ -44,4 +44,5 @@ def generateTablesForProductTerms(LABCount):
                 html += "</tr>\n"
 
     html += "</tbody>\n</table>\n"
-    return html
+    return (html, offset)
+

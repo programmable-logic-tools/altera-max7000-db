@@ -7,12 +7,14 @@
 
 from common import *
 
+LABCount = 2
+# Number of PIA-to-LAB muxes per LAB signal
+PIAtoLABmuxCount = 2
+IOCount = 32
 bitCount = 15033
 
-LABCount = 2
 
-
-html = """<html>
+page = """<html>
 <head>
 <link rel="stylesheet" type="text/css" href="common.css"/>
 </head>
@@ -24,14 +26,31 @@ The raw bitstream might have to be extracted from an Altera Quartus POF file fir
 <a href="https://github.com/programmable-logic-tools/libalterapof/tree/master/doc">libalterpof</a> may help with that.
 <br/><br/>
 The bitstream for the <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">EPM7032S</a> consists of """+str(bitCount)+""" bits in total.<br/>
-<h2>Product terms</h2>
 """
 
-html += generateTablesForProductTerms(
-            LABCount = LABCount
-            )
+#
+# Product terms
+#
+bitOffset = 0
+(htm, bitCount) = generateTablesForProductTerms(
+                        LABCount = LABCount
+                        )
+page += htm
+bitOffset += bitCount
 
-html += """
+#
+# Macrocell configuration?
+#
+
+#
+# PIA-to-LAB signal mux configuration?
+#
+
+#
+# I/O configuration?
+#
+
+page += """
 <h2>Remaining bits</h2>
 The remaining bits of the bitstream are expected to configure:
 <ul>
@@ -41,7 +60,8 @@ The remaining bits of the bitstream are expected to configure:
 <li>Cascading from previous/to next macrocell</li>
 <li>Flipflop vs. latch selection/mux</li>
 <li>FF clock signal selection</li>
-<li>FF enable signal selection</li> 
+<li>FF enable signal selection</li>
+<li>Configuration of feedback from macrocell to PIA</li>
 <li>I/O Output Enable (OE) signal selection</li>
 <li>I/O type selection: push-pull vs. open collector</li>
 <li>I/O slew rate control: slow vs. fast</li>
@@ -49,9 +69,10 @@ The remaining bits of the bitstream are expected to configure:
 </ul>
 """
 
-html += "</body>\n</html>"
+page += "</body>\n</html>"
+
 
 # Write to file
 f = open("epm7032s.html", "w")
-f.write(html)
+f.write(page)
 f.close()
