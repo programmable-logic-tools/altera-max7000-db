@@ -32,23 +32,42 @@ The bitstream for the <a href="https://www.intel.com/content/dam/www/programmabl
 # Product terms
 #
 bitOffset = 0
-(htm, bitCount) = generateTablesForProductTerms(
+(htm, bitCount) = generateHTMLForProductTerms(
                         LABCount = LABCount
                         )
 page += htm
 bitOffset += bitCount
 
 #
-# Macrocell configuration?
+# Macrocell configuration
 #
+(htm, bitCount) = generateHTMLForMacrocellConfiguration(
+            LABCount = LABCount,
+            bitOffset = bitOffset
+            )
+page += htm
+bitOffset += bitCount
 
 #
-# PIA-to-LAB signal mux configuration?
+# PIA-to-LAB signal mux configuration
 #
+(htm, bitCount) = generateHTMLForPIAtoLABrouting(
+            LABCount = LABCount,
+            PIAtoLABmuxCount = PIAtoLABmuxCount,
+            bitOffset = bitOffset
+            )
+page += htm
+bitOffset += bitCount
 
 #
-# I/O configuration?
+# I/O configuration
 #
+(htm, bitCount) = generateHTMLForIOConfiguration(
+            IOCount = IOCount,
+            bitOffset = bitOffset
+            )
+page += htm
+bitOffset += bitCount
 
 page += """
 <h2>Remaining bits</h2>

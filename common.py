@@ -5,7 +5,7 @@ ProductTermsPerMacrocell = 5
 BitsPerProductTerm = 88
 
 
-def generateTablesForProductTerms(LABCount):
+def generateHTMLForProductTerms(LABCount):
 
     html = "<h2>Product terms</h2>\n"
     html += "The device contains "+str(LABCount)+" Logic Array Blocks (LABs), each containing 16 macrocells.<br/>\n"
@@ -35,7 +35,7 @@ def generateTablesForProductTerms(LABCount):
                 for bit in range(BitsPerProductTerm):
                     if bit < 36*2:
                         # Global signal
-                        symbol = "G"
+                        symbol = "G" # + str(int(bit/2)+1)
                     else:
                         # Regional foldback signal
                         symbol = "R"
@@ -45,4 +45,27 @@ def generateTablesForProductTerms(LABCount):
 
     html += "</tbody>\n</table>\n"
     return (html, offset)
+
+
+def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
+
+    html = "<h2>Macrocell configuration(?)</h2>\n"
+    html += "The presumed macrocell configuration bits are organized per LAB half. Apparently, 104 consecutive bits configure 8 consecutive macrocells of one LAB.<br/>\n"
+    bitCount = LABCount * 2 * 104
+    byteCount = int(bitCount/8)
+    html += "With "+str(LABCount)+" LABs this makes for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for macrocell configuration.<br/>\n"
+
+    html += "\n<br/>\n<table id=\"macrocell-configuration\">\n<tbody>\n"
+    # TODO...
+    html += "</tbody>\n</table>\n"
+
+    return (html, bitCount)
+
+
+def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
+    return ("", 0)
+
+
+def generateHTMLForIOConfiguration(IOCount, bitOffset):
+    return ("", 0)
 
