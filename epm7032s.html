@@ -27,8 +27,8 @@ Caveat: Enabling multiple switches for one LAB signal may damage the device.<br/
 Every LAB signal can be selected from 2 choices. With one bit per choice this makes for 72 bits per LAB and 144 bits (18 bytes) in total for PIA to LAB routing configuration.<br/>
 Assuming that every switch/multiplexer selects a different PIA signal, a maximum of 72 PIA signals is routable to one LAB.<br/>
 <h2>I/O pin configuration</h2>
-12 bits configure one I/O block.
-With 32 I/O blocks this makes for 384 bits (48 bytes) in total for I/O configuration.<br/>
+12 bits configure one I/O block(?).
+With 32 I/O blocks this would make for 384 bits (48 bytes) in total for I/O configuration.<br/>
 <h2>Unidentified extra bits</h2>
 TODO
 <h2>Unidentified functions</h2>
@@ -276,38 +276,70 @@ The yet unidentified bits of the bitstream are expected to configure:
 <tr><td>LAB B</td><td colspan=2>Macrocell 32</td><td colspan=13>M</td></tr>
 <tr><td>LAB A</td><td colspan=2>PIA-Mux 1-36</td><td colspan="2" title="Bits 14496-14497">P</td><td colspan="2" title="Bits 14498-14499">P</td><td colspan="2" title="Bits 14500-14501">P</td><td colspan="2" title="Bits 14502-14503">P</td><td colspan="2" title="Bits 14504-14505">P</td><td colspan="2" title="Bits 14506-14507">P</td><td colspan="2" title="Bits 14508-14509">P</td><td colspan="2" title="Bits 14510-14511">P</td><td colspan="2" title="Bits 14512-14513">P</td><td colspan="2" title="Bits 14514-14515">P</td><td colspan="2" title="Bits 14516-14517">P</td><td colspan="2" title="Bits 14518-14519">P</td><td colspan="2" title="Bits 14520-14521">P</td><td colspan="2" title="Bits 14522-14523">P</td><td colspan="2" title="Bits 14524-14525">P</td><td colspan="2" title="Bits 14526-14527">P</td><td colspan="2" title="Bits 14528-14529">P</td><td colspan="2" title="Bits 14530-14531">P</td><td colspan="2" title="Bits 14532-14533">P</td><td colspan="2" title="Bits 14534-14535">P</td><td colspan="2" title="Bits 14536-14537">P</td><td colspan="2" title="Bits 14538-14539">P</td><td colspan="2" title="Bits 14540-14541">P</td><td colspan="2" title="Bits 14542-14543">P</td><td colspan="2" title="Bits 14544-14545">P</td><td colspan="2" title="Bits 14546-14547">P</td><td colspan="2" title="Bits 14548-14549">P</td><td colspan="2" title="Bits 14550-14551">P</td><td colspan="2" title="Bits 14552-14553">P</td><td colspan="2" title="Bits 14554-14555">P</td><td colspan="2" title="Bits 14556-14557">P</td><td colspan="2" title="Bits 14558-14559">P</td><td colspan="2" title="Bits 14560-14561">P</td><td colspan="2" title="Bits 14562-14563">P</td><td colspan="2" title="Bits 14564-14565">P</td><td colspan="2" title="Bits 14566-14567">P</td></tr>
 <tr><td>LAB B</td><td colspan=2>PIA-Mux 37-72</td><td colspan="2" title="Bits 14568-14569">P</td><td colspan="2" title="Bits 14570-14571">P</td><td colspan="2" title="Bits 14572-14573">P</td><td colspan="2" title="Bits 14574-14575">P</td><td colspan="2" title="Bits 14576-14577">P</td><td colspan="2" title="Bits 14578-14579">P</td><td colspan="2" title="Bits 14580-14581">P</td><td colspan="2" title="Bits 14582-14583">P</td><td colspan="2" title="Bits 14584-14585">P</td><td colspan="2" title="Bits 14586-14587">P</td><td colspan="2" title="Bits 14588-14589">P</td><td colspan="2" title="Bits 14590-14591">P</td><td colspan="2" title="Bits 14592-14593">P</td><td colspan="2" title="Bits 14594-14595">P</td><td colspan="2" title="Bits 14596-14597">P</td><td colspan="2" title="Bits 14598-14599">P</td><td colspan="2" title="Bits 14600-14601">P</td><td colspan="2" title="Bits 14602-14603">P</td><td colspan="2" title="Bits 14604-14605">P</td><td colspan="2" title="Bits 14606-14607">P</td><td colspan="2" title="Bits 14608-14609">P</td><td colspan="2" title="Bits 14610-14611">P</td><td colspan="2" title="Bits 14612-14613">P</td><td colspan="2" title="Bits 14614-14615">P</td><td colspan="2" title="Bits 14616-14617">P</td><td colspan="2" title="Bits 14618-14619">P</td><td colspan="2" title="Bits 14620-14621">P</td><td colspan="2" title="Bits 14622-14623">P</td><td colspan="2" title="Bits 14624-14625">P</td><td colspan="2" title="Bits 14626-14627">P</td><td colspan="2" title="Bits 14628-14629">P</td><td colspan="2" title="Bits 14630-14631">P</td><td colspan="2" title="Bits 14632-14633">P</td><td colspan="2" title="Bits 14634-14635">P</td><td colspan="2" title="Bits 14636-14637">P</td><td colspan="2" title="Bits 14638-14639">P</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 1</td><td colspan=12 title="Bits 14640-14651">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 2</td><td colspan=12 title="Bits 14652-14663">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 3</td><td colspan=12 title="Bits 14664-14675">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 4</td><td colspan=12 title="Bits 14676-14687">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 5</td><td colspan=12 title="Bits 14688-14699">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 6</td><td colspan=12 title="Bits 14700-14711">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 7</td><td colspan=12 title="Bits 14712-14723">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 8</td><td colspan=12 title="Bits 14724-14735">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 9</td><td colspan=12 title="Bits 14736-14747">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 10</td><td colspan=12 title="Bits 14748-14759">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 11</td><td colspan=12 title="Bits 14760-14771">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 12</td><td colspan=12 title="Bits 14772-14783">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 13</td><td colspan=12 title="Bits 14784-14795">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 14</td><td colspan=12 title="Bits 14796-14807">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 15</td><td colspan=12 title="Bits 14808-14819">IO</td></tr>
-<tr><td>LAB A</td><td colspan=2>IO 16</td><td colspan=12 title="Bits 14820-14831">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 17</td><td colspan=12 title="Bits 14832-14843">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 18</td><td colspan=12 title="Bits 14844-14855">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 19</td><td colspan=12 title="Bits 14856-14867">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 20</td><td colspan=12 title="Bits 14868-14879">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 21</td><td colspan=12 title="Bits 14880-14891">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 22</td><td colspan=12 title="Bits 14892-14903">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 23</td><td colspan=12 title="Bits 14904-14915">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 24</td><td colspan=12 title="Bits 14916-14927">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 25</td><td colspan=12 title="Bits 14928-14939">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 26</td><td colspan=12 title="Bits 14940-14951">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 27</td><td colspan=12 title="Bits 14952-14963">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 28</td><td colspan=12 title="Bits 14964-14975">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 29</td><td colspan=12 title="Bits 14976-14987">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 30</td><td colspan=12 title="Bits 14988-14999">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 31</td><td colspan=12 title="Bits 15000-15011">IO</td></tr>
-<tr><td>LAB B</td><td colspan=2>IO 32</td><td colspan=12 title="Bits 15012-15023">IO</td></tr>
+<tr><td colspan=3>Unidentified word 1</td><td colspan=6 title="Bits 14640-14645">IO</td></tr>
+<tr><td colspan=3>Unidentified word 2</td><td colspan=6 title="Bits 14646-14651">IO</td></tr>
+<tr><td colspan=3>Unidentified word 3</td><td colspan=6 title="Bits 14652-14657">IO</td></tr>
+<tr><td colspan=3>Unidentified word 4</td><td colspan=6 title="Bits 14658-14663">IO</td></tr>
+<tr><td colspan=3>Unidentified word 5</td><td colspan=6 title="Bits 14664-14669">IO</td></tr>
+<tr><td colspan=3>Unidentified word 6</td><td colspan=6 title="Bits 14670-14675">IO</td></tr>
+<tr><td colspan=3>Unidentified word 7</td><td colspan=6 title="Bits 14676-14681">IO</td></tr>
+<tr><td colspan=3>Unidentified word 8</td><td colspan=6 title="Bits 14682-14687">IO</td></tr>
+<tr><td colspan=3>Unidentified word 9</td><td colspan=6 title="Bits 14688-14693">IO</td></tr>
+<tr><td colspan=3>Unidentified word 10</td><td colspan=6 title="Bits 14694-14699">IO</td></tr>
+<tr><td colspan=3>Unidentified word 11</td><td colspan=6 title="Bits 14700-14705">IO</td></tr>
+<tr><td colspan=3>Unidentified word 12</td><td colspan=6 title="Bits 14706-14711">IO</td></tr>
+<tr><td colspan=3>Unidentified word 13</td><td colspan=6 title="Bits 14712-14717">IO</td></tr>
+<tr><td colspan=3>Unidentified word 14</td><td colspan=6 title="Bits 14718-14723">IO</td></tr>
+<tr><td colspan=3>Unidentified word 15</td><td colspan=6 title="Bits 14724-14729">IO</td></tr>
+<tr><td colspan=3>Unidentified word 16</td><td colspan=6 title="Bits 14730-14735">IO</td></tr>
+<tr><td colspan=3>Unidentified word 17</td><td colspan=6 title="Bits 14736-14741">IO</td></tr>
+<tr><td colspan=3>Unidentified word 18</td><td colspan=6 title="Bits 14742-14747">IO</td></tr>
+<tr><td colspan=3>Unidentified word 19</td><td colspan=6 title="Bits 14748-14753">IO</td></tr>
+<tr><td colspan=3>Unidentified word 20</td><td colspan=6 title="Bits 14754-14759">IO</td></tr>
+<tr><td colspan=3>Unidentified word 21</td><td colspan=6 title="Bits 14760-14765">IO</td></tr>
+<tr><td colspan=3>Unidentified word 22</td><td colspan=6 title="Bits 14766-14771">IO</td></tr>
+<tr><td colspan=3>Unidentified word 23</td><td colspan=6 title="Bits 14772-14777">IO</td></tr>
+<tr><td colspan=3>Unidentified word 24</td><td colspan=6 title="Bits 14778-14783">IO</td></tr>
+<tr><td colspan=3>Unidentified word 25</td><td colspan=6 title="Bits 14784-14789">IO</td></tr>
+<tr><td colspan=3>Unidentified word 26</td><td colspan=6 title="Bits 14790-14795">IO</td></tr>
+<tr><td colspan=3>Unidentified word 27</td><td colspan=6 title="Bits 14796-14801">IO</td></tr>
+<tr><td colspan=3>Unidentified word 28</td><td colspan=6 title="Bits 14802-14807">IO</td></tr>
+<tr><td colspan=3>Unidentified word 29</td><td colspan=6 title="Bits 14808-14813">IO</td></tr>
+<tr><td colspan=3>Unidentified word 30</td><td colspan=6 title="Bits 14814-14819">IO</td></tr>
+<tr><td colspan=3>Unidentified word 31</td><td colspan=6 title="Bits 14820-14825">IO</td></tr>
+<tr><td colspan=3>Unidentified word 32</td><td colspan=6 title="Bits 14826-14831">IO</td></tr>
+<tr><td colspan=3>Unidentified word 33</td><td colspan=6 title="Bits 14832-14837">IO</td></tr>
+<tr><td colspan=3>Unidentified word 34</td><td colspan=6 title="Bits 14838-14843">IO</td></tr>
+<tr><td colspan=3>Unidentified word 35</td><td colspan=6 title="Bits 14844-14849">IO</td></tr>
+<tr><td colspan=3>Unidentified word 36</td><td colspan=6 title="Bits 14850-14855">IO</td></tr>
+<tr><td colspan=3>Unidentified word 37</td><td colspan=6 title="Bits 14856-14861">IO</td></tr>
+<tr><td colspan=3>Unidentified word 38</td><td colspan=6 title="Bits 14862-14867">IO</td></tr>
+<tr><td colspan=3>Unidentified word 39</td><td colspan=6 title="Bits 14868-14873">IO</td></tr>
+<tr><td colspan=3>Unidentified word 40</td><td colspan=6 title="Bits 14874-14879">IO</td></tr>
+<tr><td colspan=3>Unidentified word 41</td><td colspan=6 title="Bits 14880-14885">IO</td></tr>
+<tr><td colspan=3>Unidentified word 42</td><td colspan=6 title="Bits 14886-14891">IO</td></tr>
+<tr><td colspan=3>Unidentified word 43</td><td colspan=6 title="Bits 14892-14897">IO</td></tr>
+<tr><td colspan=3>Unidentified word 44</td><td colspan=6 title="Bits 14898-14903">IO</td></tr>
+<tr><td colspan=3>Unidentified word 45</td><td colspan=6 title="Bits 14904-14909">IO</td></tr>
+<tr><td colspan=3>Unidentified word 46</td><td colspan=6 title="Bits 14910-14915">IO</td></tr>
+<tr><td colspan=3>Unidentified word 47</td><td colspan=6 title="Bits 14916-14921">IO</td></tr>
+<tr><td colspan=3>Unidentified word 48</td><td colspan=6 title="Bits 14922-14927">IO</td></tr>
+<tr><td colspan=3>Unidentified word 49</td><td colspan=6 title="Bits 14928-14933">IO</td></tr>
+<tr><td colspan=3>Unidentified word 50</td><td colspan=6 title="Bits 14934-14939">IO</td></tr>
+<tr><td colspan=3>Unidentified word 51</td><td colspan=6 title="Bits 14940-14945">IO</td></tr>
+<tr><td colspan=3>Unidentified word 52</td><td colspan=6 title="Bits 14946-14951">IO</td></tr>
+<tr><td colspan=3>Unidentified word 53</td><td colspan=6 title="Bits 14952-14957">IO</td></tr>
+<tr><td colspan=3>Unidentified word 54</td><td colspan=6 title="Bits 14958-14963">IO</td></tr>
+<tr><td colspan=3>Unidentified word 55</td><td colspan=6 title="Bits 14964-14969">IO</td></tr>
+<tr><td colspan=3>Unidentified word 56</td><td colspan=6 title="Bits 14970-14975">IO</td></tr>
+<tr><td colspan=3>Unidentified word 57</td><td colspan=6 title="Bits 14976-14981">IO</td></tr>
+<tr><td colspan=3>Unidentified word 58</td><td colspan=6 title="Bits 14982-14987">IO</td></tr>
+<tr><td colspan=3>Unidentified word 59</td><td colspan=6 title="Bits 14988-14993">IO</td></tr>
+<tr><td colspan=3>Unidentified word 60</td><td colspan=6 title="Bits 14994-14999">IO</td></tr>
+<tr><td colspan=3>Unidentified word 61</td><td colspan=6 title="Bits 15000-15005">IO</td></tr>
+<tr><td colspan=3>Unidentified word 62</td><td colspan=6 title="Bits 15006-15011">IO</td></tr>
+<tr><td colspan=3>Unidentified word 63</td><td colspan=6 title="Bits 15012-15017">IO</td></tr>
+<tr><td colspan=3>Unidentified word 64</td><td colspan=6 title="Bits 15018-15023">IO</td></tr>
 <tr><td colspan=3>Extra bits</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td></tr>
 
 </table>
