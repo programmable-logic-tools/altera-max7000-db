@@ -113,3 +113,11 @@ def generateHTMLForIOConfiguration(IOCount, bitOffset):
 
     return (html, tr, bitCount)
 
+
+def generateHTMLForExtraBits(count):
+    html = "<h2>Unidentified extra bits</h2>\nTODO"
+    tr = "<tr><td colspan=3>Extra bits</td>"
+    for i in range(count):
+        tr += "<td>?</td>"
+    tr += "</tr>\n"
+    return (html, tr, count)

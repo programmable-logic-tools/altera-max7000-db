@@ -22,5 +22,9 @@ cp -v *.html *.css "$TARGET_FOLDER/"
 hash=$(git rev-parse --short HEAD)
 cd "$TARGET_FOLDER"
 git add -A
-git commit -m "Generated using commit $hash"
+git commit -m "Generated from commit $hash"
+
+if [ "$1" == "--push" ]; then
+	git push
+fi
 

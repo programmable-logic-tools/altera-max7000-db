@@ -75,6 +75,14 @@ page += htm
 table += tr
 bitOffset += bitCount
 
+#
+# Extra bits of unknown function
+#
+(htm, tr, bitCount) = generateHTMLForExtraBits(9)
+page += htm
+table += tr
+
+
 page += """
 <h2>Unidentified functions</h2>
 The yet unidentified bits of the bitstream are expected to configure:
