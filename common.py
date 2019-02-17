@@ -49,15 +49,25 @@ def generateHTMLForProductTerms(LABCount, bitOffset=0):
 
 def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
 
-    html = "<h2>Macrocell configuration</h2>\n"
-    html += "13 bits configure one macrocell.\n"
-    bitCount = LABCount * MacrocellsPerLAB * 13
+    bitsPerMacrocell = 13
+    MacrocellCount = LABCount * MacrocellsPerLAB
+    bitCount = MacrocellCount * 13
     byteCount = int(bitCount/8)
-    html += "With "+str(LABCount)+" LABs this makes for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for macrocell configuration.<br/>\n"
 
-    # TODO...
+    html = "<h2>Macrocell configuration</h2>\n"
+    html += "{:d} bits configure one macrocell.\n".format(bitsPerMacrocell)
+    html += "With {:d} LABs this makes for {:d} bits ({:d} bytes) in total for macrocell configuration.<br/>\n".format(LABCount, bitCount, byteCount)
 
-    return (html, "", bitCount)
+    tr = ""
+    for i in range(MacrocellCount):
+        labChar = chr(ord('A') + (i / MacrocellsPerLAB))
+        tr += "<tr><td>LAB {:s}</td>".format(labChar)
+        tr += "<td colspan=2>Macrocell {:d}</td>".format(i+1)
+        tr += "<td colspan={:d}>M</td>".format(bitsPerMacrocell)
+        bitOffset += bitsPerMacrocell
+        tr += "</tr>\n"
+
+    return (html, tr, bitCount)
 
 
 def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
@@ -69,9 +79,18 @@ def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
     bitCount = LABCount * GlobalSignalsPerLAB * PIAtoLABmuxCount
     byteCount = int(bitCount/8)
     html += "Every LAB signal can be selected from "+str(PIAtoLABmuxCount)+" choices. With one bit per choice this makes for "+str(GlobalSignalsPerLAB*PIAtoLABmuxCount)+" bits per LAB and "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for PIA to LAB routing configuration.<br/>\n"
-    html += "Assuming that every switch/multiplexer selects a different PIA signal, a maximum of "+str(GlobalSignalsPerLAB*PIAtoLABmuxCount)+" PIA signals are routable to a LAB.<br/>\n" 
+    html += "Assuming that every switch/multiplexer selects a different PIA signal, a maximum of {:d} PIA signals is routable to one LAB.<br/>\n".format(GlobalSignalsPerLAB*PIAtoLABmuxCount)
 
-    return (html, "", bitCount)
+    tr = ""
+    for i in range(LABCount):
+        labChar = chr(ord('A') + i)
+        tr += "<tr><td>LAB {:s}</td><td colspan=2>PIA-Mux {:d}-{:d}</td>".format(labChar, i*GlobalSignalsPerLAB+1, (i+1)*GlobalSignalsPerLAB)
+        for j in range(GlobalSignalsPerLAB):
+            tr += "<td colspan=\"{:d}\" title=\"Bits {:d}-{:d}\">P</td>".format(PIAtoLABmuxCount, bitOffset, bitOffset+PIAtoLABmuxCount-1)
+            bitOffset += PIAtoLABmuxCount
+        tr += "</tr>\n"
+
+    return (html, tr, bitCount)
 
 
 def generateHTMLForIOConfiguration(IOCount, bitOffset):
@@ -83,13 +102,13 @@ def generateHTMLForIOConfiguration(IOCount, bitOffset):
     html += "With "+str(IOCount)+" I/O blocks this makes for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for I/O configuration.<br/>\n"
 
     tr = ""
-    bit = 0
     for i in range(IOCount):
-        tr += """<tr><td class="empty"></td><td class="empty"></td><td class="empty"></td>"""
-        for j in range(BitsPerIO):
-            symbol = "IO"
-            tr += "<td title=\"Bit "+str(bitOffset+bit)+"\">"+symbol+"</td>"
-            bit += 1
+        labChar = chr(ord('A') + (i / MacrocellsPerLAB))
+        tr += "<tr><td>LAB {:s}</td>".format(labChar)
+        tr += "<td colspan=2>IO {:d}</td>".format(i+1)
+        symbol = "IO"
+        tr += "<td colspan={:d} title=\"Bits {:d}-{:d}\">{:s}</td>".format(BitsPerIO, bitOffset, bitOffset+BitsPerIO-1, symbol)
+        bitOffset += BitsPerIO
         tr += "</tr>\n"
 
     return (html, tr, bitCount)

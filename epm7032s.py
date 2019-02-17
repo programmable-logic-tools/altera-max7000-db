@@ -79,7 +79,6 @@ page += """
 <h2>Unidentified functions</h2>
 The yet unidentified bits of the bitstream are expected to configure:
 <ul>
-<li>PIA-to-LAB routing</li>
 <li>Product selection for sum-of-products term</li>
 <li>XOR second input signal selection</li>
 <li>Cascading from previous/to next macrocell</li>
