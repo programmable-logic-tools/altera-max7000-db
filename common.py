@@ -96,19 +96,21 @@ def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
 def generateHTMLForIOConfiguration(IOCount, bitOffset):
 
     html = "<h2>I/O pin configuration</h2>\n"
-    html += str(BitsPerIO)+" bits configure one I/O block.\n"
+    html += str(BitsPerIO)+" bits configure one I/O block(?).\n"
     bitCount = IOCount * BitsPerIO
     byteCount = int(bitCount/8)
-    html += "With "+str(IOCount)+" I/O blocks this makes for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for I/O configuration.<br/>\n"
+    html += "With "+str(IOCount)+" I/O blocks this would make for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for I/O configuration.<br/>\n"
 
     tr = ""
-    for i in range(IOCount):
+    # TODO: Why 64?
+    for i in range(64):
         labChar = chr(ord('A') + (i / MacrocellsPerLAB))
-        tr += "<tr><td>LAB {:s}</td>".format(labChar)
-        tr += "<td colspan=2>IO {:d}</td>".format(i+1)
+        tr += "<tr><td colspan=3>Unidentified word {:d}</td>".format(i+1)
+        #tr += "<td>LAB {:s}</td>".format(labChar)
+        #tr += "<td colspan=2>IO {:d}</td>".format(i+1)
         symbol = "IO"
-        tr += "<td colspan={:d} title=\"Bits {:d}-{:d}\">{:s}</td>".format(BitsPerIO, bitOffset, bitOffset+BitsPerIO-1, symbol)
-        bitOffset += BitsPerIO
+        tr += "<td colspan={:d} title=\"Bits {:d}-{:d}\">{:s}</td>".format(6, bitOffset, bitOffset+6-1, symbol)
+        bitOffset += 6
         tr += "</tr>\n"
 
     return (html, tr, bitCount)
