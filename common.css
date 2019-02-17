@@ -1,12 +1,17 @@
 
-table#product-terms
+table
 {
     font-size: 10pt;
     border: 2px solid black;
     text-align: center;
 }
 
-table#product-terms td
+td.bit
 {
     border: 1px solid black;
+}
+
+td.empty
+{
+    border: none;
 }
