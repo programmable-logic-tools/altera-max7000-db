@@ -5,6 +5,7 @@
 # for the bitstream of an Altera EPM7032S CPLD.
 #
 
+import sys
 from common import *
 
 LABCount = 2
@@ -32,46 +33,51 @@ The bitstream for the <a href="https://www.intel.com/content/dam/www/programmabl
 # Product terms
 #
 bitOffset = 0
-(htm, bitCount) = generateHTMLForProductTerms(
-                        LABCount = LABCount
+(htm, tr, bitCount) = generateHTMLForProductTerms(
+                        LABCount = LABCount,
+                        bitOffset = bitOffset
                         )
 page += htm
+table = tr
 bitOffset += bitCount
 
 #
 # Macrocell configuration
 #
-(htm, bitCount) = generateHTMLForMacrocellConfiguration(
+(htm, tr, bitCount) = generateHTMLForMacrocellConfiguration(
             LABCount = LABCount,
             bitOffset = bitOffset
             )
 page += htm
+table += tr
 bitOffset += bitCount
 
 #
 # PIA-to-LAB signal mux configuration
 #
-(htm, bitCount) = generateHTMLForPIAtoLABrouting(
+(htm, tr, bitCount) = generateHTMLForPIAtoLABrouting(
             LABCount = LABCount,
             PIAtoLABmuxCount = PIAtoLABmuxCount,
             bitOffset = bitOffset
             )
 page += htm
+table += tr
 bitOffset += bitCount
 
 #
 # I/O configuration
 #
-(htm, bitCount) = generateHTMLForIOConfiguration(
+(htm, tr, bitCount) = generateHTMLForIOConfiguration(
             IOCount = IOCount,
             bitOffset = bitOffset
             )
 page += htm
+table += tr
 bitOffset += bitCount
 
 page += """
-<h2>Remaining bits</h2>
-The remaining bits of the bitstream are expected to configure:
+<h2>Unidentified functions</h2>
+The yet unidentified bits of the bitstream are expected to configure:
 <ul>
 <li>PIA-to-LAB routing</li>
 <li>Product selection for sum-of-products term</li>
@@ -88,8 +94,13 @@ The remaining bits of the bitstream are expected to configure:
 </ul>
 """
 
-page += "</body>\n</html>"
+page += """<h2>Bit table</h2>
+<table>
+"""+table+"""
+</table>
+"""
 
+page += "</body>\n</html>"
 
 # Write to file
 f = open("epm7032s.html", "w")

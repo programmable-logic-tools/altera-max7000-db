@@ -1,6 +1,7 @@
 
 *.htm
 *.html
+*.yaml
 
 *.pyc
 
