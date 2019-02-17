@@ -51,9 +51,9 @@ def generateHTMLForProductTerms(LABCount):
 
 def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
 
-    html = "<h2>Macrocell configuration(?)</h2>\n"
-    html += "The presumed macrocell configuration bits are organized per LAB half. Apparently, 104 consecutive bits configure 8 consecutive macrocells of one LAB.<br/>\n"
-    bitCount = LABCount * 2 * 104
+    html = "<h2>Macrocell configuration</h2>\n"
+    html += "13 bits configure one macrocell.\n"
+    bitCount = LABCount * MacrocellsPerLAB * 13
     byteCount = int(bitCount/8)
     html += "With "+str(LABCount)+" LABs this makes for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for macrocell configuration.<br/>\n"
 
