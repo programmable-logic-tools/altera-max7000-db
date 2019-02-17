@@ -95,7 +95,7 @@ def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
 
 def generateHTMLForIOConfiguration(IOCount, bitOffset):
 
-    html = "<h2>I/O pin configuration</h2>\n"
+    html = "<h2>I/O configuration</h2>\n"
     html += str(BitsPerIO)+" bits configure one I/O block(?).\n"
     bitCount = IOCount * BitsPerIO
     byteCount = int(bitCount/8)
@@ -105,10 +105,15 @@ def generateHTMLForIOConfiguration(IOCount, bitOffset):
     # TODO: Why 64?
     for i in range(64):
         labChar = chr(ord('A') + (i / MacrocellsPerLAB))
-        tr += "<tr><td colspan=3>Unidentified word {:d}</td>".format(i+1)
+        if i in range(30,62):
+            s = "I/O {:d}".format(i-29)
+            symbol = "IO"
+        else:
+            s = "Unidentified word {:d}".format(i+1)
+            symbol = "W"
+        tr += "<tr><td colspan=3>{:s}</td>".format(s)
         #tr += "<td>LAB {:s}</td>".format(labChar)
         #tr += "<td colspan=2>IO {:d}</td>".format(i+1)
-        symbol = "IO"
         tr += "<td colspan={:d} title=\"Bits {:d}-{:d}\">{:s}</td>".format(6, bitOffset, bitOffset+6-1, symbol)
         bitOffset += 6
         tr += "</tr>\n"
