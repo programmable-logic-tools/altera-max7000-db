@@ -32,7 +32,7 @@ Strings are null-terminated (The null characters is counted in the block size fi
 | 2 | string | variable | Model number of target device, this file is intended for |
 | 3 | string | variable | Project title / Comment |
 | 5 | uint16_t | 2 bytes | Encryption / Security bits configuration |
-| 8 | uint16_t | 2 bytes | Checksum (file or bitstream?) |
+| 8 | uint16_t | 2 bytes | Checksum (For file or bitstream? CRC? Which polynomial?) |
 | 17 | uint8_t[] | constant for one device type | Programming data |
 
 ## Block type: Programming data
