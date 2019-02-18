@@ -78,9 +78,20 @@ bitOffset += bitCount
 #
 # Extra bits of unknown function
 #
-(htm, tr, bitCount) = generateHTMLForExtraBits(9)
+(htm, tr, bitCount) = generateHTMLForExtraBits(17, bitOffset)
+#page += htm
+table += tr
+bitOffset += bitCount
+
+#
+# Usercode
+#
+(htm, tr, bitCount) = generateHTMLForUsercode(
+            bitOffset = bitOffset
+            )
 page += htm
 table += tr
+bitOffset += bitCount
 
 
 page += """
@@ -97,6 +108,7 @@ The yet unidentified bits of the bitstream are expected to configure:
 <li>I/O Output Enable (OE) signal selection</li>
 <li>I/O type selection: push-pull vs. open collector</li>
 <li>I/O slew rate control: slow vs. fast</li>
+<li>Usercode</li>
 <li>JTAG enable/disable</li>
 </ul>
 """

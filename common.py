@@ -57,6 +57,16 @@ def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
     html = "<h2>Macrocell configuration</h2>\n"
     html += "{:d} bits configure one macrocell.\n".format(bitsPerMacrocell)
     html += "With {:d} LABs this makes for {:d} bits ({:d} bytes) in total for macrocell configuration.<br/>\n".format(LABCount, bitCount, byteCount)
+    html += """The macrocell bits are expected to configure:
+<ul>
+<li>Select product terms: Probably five bits, one per product term</li>
+<li>Select logic type: Combinatorial (latch) or flip-flop (at least one bit)</li>
+<li>Select D-FF clock signal: GCLK1 or GCLK2 or a product term (at least two bits)</li>
+<li>Select D-FF enable signal: None or OE1 or OE2 or product term? (two bits?)</li>
+<li>Select D-FF clear signal: None or GCLR or product term (two bits?)</li>
+<li>Enable parallel expander input (one bit?)</li>
+</ul>
+"""
 
     tr = ""
     for i in range(MacrocellCount):
@@ -102,8 +112,8 @@ def generateHTMLForIOConfiguration(IOCount, bitOffset):
     html += "With "+str(IOCount)+" I/O blocks this would make for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for I/O configuration.<br/>\n"
 
     tr = ""
-    # TODO: Why 64?
-    for i in range(64):
+    # TODO: Why 62?
+    for i in range(62):
         labChar = chr(ord('A') + (i / MacrocellsPerLAB))
         if i in range(30,62):
             s = "I/O {:d}".format(i-29)
@@ -118,13 +128,31 @@ def generateHTMLForIOConfiguration(IOCount, bitOffset):
         bitOffset += 6
         tr += "</tr>\n"
 
-    return (html, tr, bitCount)
+    #return (html, tr, bitCount)
+    return (html, tr, 62*6)
 
 
-def generateHTMLForExtraBits(count):
+def generateHTMLForUsercode(bitOffset):
+    html = "<h2>Usercode</h2>\n"
+    html += "A 16-bit user electronic signature (usercode) is stored in the bitstream.\n"
+
+    tr = "<tr><td colspan=3>Usercode</td>"
+    tr += "<td colspan=7 title=\"Bits {:d}-{:d}\">Bits 7-1</td>".format(bitOffset, bitOffset+7)
+    bitOffset += 7
+    tr += "<td title=\"Bit {:d}: Unknown function\">?</td>".format(bitOffset)
+    bitOffset += 1
+    tr += "<td colspan=9 title=\"Bits {:d}-{:d}\">Bits 16-8</td>".format(bitOffset, bitOffset+9)
+    bitOffset += 9
+    tr += "</tr>\n"
+
+    return (html, tr, 17)
+
+
+def generateHTMLForExtraBits(count, bitOffset):
     html = "<h2>Unidentified extra bits</h2>\nTODO"
     tr = "<tr><td colspan=3>Extra bits</td>"
     for i in range(count):
-        tr += "<td>?</td>"
+        tr += "<td title=\"{:d}\">?</td>".format(bitOffset)
+        bitOffset += 1
     tr += "</tr>\n"
     return (html, tr, count)
