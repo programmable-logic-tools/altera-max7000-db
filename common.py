@@ -219,19 +219,56 @@ With {:d} I/O blocks this would make for {:d} bits ({:d} bytes) in total for I/O
 
 
 def generateHTMLForUsercode(bitOffset):
-    html = "<h2>Usercode</h2>\n"
-    html += "A 16-bit user electronic signature (usercode) is stored in the bitstream.\n"
+    html = """
+<h2>Usercode</h2>
+
+A 16-bit user electronic signature (usercode) is stored in the bitstream.
+It occupies it's last 16 bits.
+It's bits and bytes are in reversed order (additionally to the reversed order that bits are stored in a POF file).
+
+<h3>Example</h3>
+<table>
+<tr>
+<td rowspan=2>Last 3 bytes of the bitstream payload in the POF file</td>
+<td>0x9a</td>
+<td>0x57</td>
+<td>0x01</td>
+</tr>
+<tr>
+<td class=binary>1001 1010</td>
+<td class=binary>0101 0111</td>
+<td class=binary>0000 0001</td>
+</tr>
+<tr>
+<td rowspan=2>Bitstream bit order</td>
+<td class=binary>0101 1001</td>
+<td class=binary>1110 1010</td>
+<td class=binary>1000 0000</td>
+</tr>
+<tr>
+<td colspan=3 class=binary>0101 1001 1110 1010 1000 0000</td>
+</tr>
+<tr>
+<td>Last 16 bits of the bitstream</td>
+<td colspan=3 class=binary>1011 0011 1101 0101</td>
+</tr>
+<tr>
+<td>Inverted bit order</td>
+<td colspan=3 class=binary>1010 1011 1100 1101</td>
+</tr>
+<tr>
+<td>Usercode</td>
+<td colspan=3>0xABCD</td>
+</tr>
+</table>
+"""
 
     tr = "<tr><td colspan=3>Usercode</td>"
-    tr += "<td colspan=7 title=\"Bits {:d}-{:d}\">Bits 7-1</td>".format(bitOffset, bitOffset+7)
-    bitOffset += 7
-    tr += "<td title=\"Bit {:d}: Unknown function\">?</td>".format(bitOffset)
-    bitOffset += 1
-    tr += "<td colspan=9 title=\"Bits {:d}-{:d}\">Bits 16-8</td>".format(bitOffset, bitOffset+9)
-    bitOffset += 9
+    tr += "<td colspan=16 title=\"Bits {:d}-{:d}\">Bits {:d}-{:d}</td>".format(bitOffset+16, bitOffset, 16, 1)
+    bitOffset += 16
     tr += "</tr>\n"
 
-    return (html, tr, 17)
+    return (html, tr, 16)
 
 
 def generateHTMLForExtraBits(count, bitOffset):
