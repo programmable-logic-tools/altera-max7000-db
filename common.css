@@ -1,15 +1,17 @@
 
 table
 {
-    width: 90%;
     font-size: 10pt;
     border: 2px solid black;
     text-align: center;
+    margin-top: 15px;
+    margin-bottom: 30px;
 }
 
 td
 {
     border: 1px solid black;
+    min-width: 15px;
 }
 
 td.empty

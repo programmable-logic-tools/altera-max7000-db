@@ -4,18 +4,35 @@ MacrocellsPerLAB = 16
 ProductTermsPerMacrocell = 5
 BitsPerProductTerm = 88
 GlobalSignalsPerLAB = 36
-BitsPerIO = 12
+BitsPerIO = 6
 
 
 def generateHTMLForProductTerms(LABCount, bitOffset=0):
 
-    html = "<h2>Product terms</h2>\n"
-    html += "The device contains "+str(LABCount)+" Logic Array Blocks (LABs), each containing 16 macrocells.<br/>\n"
-    html += "Bits 0 through "+str(LABCount*MacrocellsPerLAB*ProductTermsPerMacrocell*BitsPerProductTerm-1)+" of the bitstream configure the device's product terms.<br/>\n"
-    html += "Each product term is configured by "+str(BitsPerProductTerm)+" bits.\n"
-    html += "A '1' represents a disregarded signal, a '0' appends the signal to the product.<br/>\n"
-    html += "The lower 72 bits switch global signals ('G'), routed to the LAB from the PIA (36 signals, once inverted and once non-inverted).<br/>\n"
-    html += "The higher 16 bits switch regional foldback signals ('R'), i.e. outputs from macrocells of the same LAB.<br>\n"
+    template = """
+<h2>Product terms</h2>
+The device contains {:d} Logic Array Blocks (LABs), each containing 16 macrocells.
+Every macrocell can use between 0 and 5 product terms to calculate a sum-of-products.
+Each of those product terms can use up to {:d} different input signals choosable from {:d} nets to calculate a product.
+To enable the inclusion of a net into a product term, the corresponding bit in the bitstream must be toggled:
+A '1' represents a disregarded signal, a '0' appends the signal to the product.
+Therefore, each product term is configured by {:d} bits and {:d} bits of the bitstream configure all the device's product terms.
+The product term configuration bits appear clustered in the bitstream and in the following order:
+product term 1 first - 5 last, macrocell 1 first - 16 last, LAB A first - B last.
+Within one product term the earlier 72 bits switch global signals:
+36 global signals are routed to each LAB from the PIA.
+Two consecutive bits switch one of those global signals - the first bit non-inverted, the second inverted.
+Another 16 bits switch regional foldback signals from outputs of macrocells within the same LAB.
+"""
+
+    html = template.format(
+                LABCount,
+                int(BitsPerProductTerm/2),
+                BitsPerProductTerm,
+                BitsPerProductTerm,
+                LABCount*MacrocellsPerLAB*ProductTermsPerMacrocell*BitsPerProductTerm,
+                BitsPerProductTerm
+                )
 
     # Rows in bit table
     tr = ""
@@ -54,10 +71,13 @@ def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
     bitCount = MacrocellCount * 13
     byteCount = int(bitCount/8)
 
-    html = "<h2>Macrocell configuration</h2>\n"
-    html += "{:d} bits configure one macrocell.\n".format(bitsPerMacrocell)
-    html += "With {:d} LABs this makes for {:d} bits ({:d} bytes) in total for macrocell configuration.<br/>\n".format(LABCount, bitCount, byteCount)
-    html += """The macrocell bits are expected to configure:
+    template = """
+<h2>Macrocell configuration</h2>
+
+In this context by macrocell configuration it is referred to everything configurable
+between product terms and macrocell input/output signal.
+
+The macrocell bits are expected to configure:
 <ul>
 <li>Select product terms: Probably five bits, one per product term</li>
 <li>Select logic type: Combinatorial (latch) or flip-flop (at least one bit)</li>
@@ -66,7 +86,45 @@ def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
 <li>Select D-FF clear signal: None or GCLR or product term (two bits?)</li>
 <li>Enable parallel expander input (one bit?)</li>
 </ul>
+
+It appears, {:d} bits configure one macrocell.
+With {:d} LABs this makes for {:d} bits ({:d} bytes) in total for macrocell configuration.
+
+<h3>Preliminary configuration bit order</h3>
+
+It seems, the macrocell configuration bits appear in the following order in the bitstream:
+<table>
+<tbody>
+<tr>
+<td title="Bit 1: Enable PT1 to OR switch">PT1E</td>
+<td title="Bit 2: Enable PT2 to OR switch">PT2E</td>
+<td title="Bit 3: Enable PT3 to OR switch">PT3E</td>
+<td title="Bit 4: Enable PT4 to OR switch">PT4E</td>
+<td title="Bit 5: Enable PT5 to OR switch">PT5E</td>
+<td title="Bit 6: Enable global clock usage">GCLKE</td>
+<td title="Bit 7: Enable global clear usage">GCLRE</td>
+<td title="Bits 8-10: Unknown function" colspan=3>???</td>
+<td title="Bit 11: Select registered or latched output">RLS</td>
+<td title="Bit 13: Select global clock">GCLK</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>PT1E: Enable inclusion of product term 1 in the sum</li>
+<li>PT2E: Enable inclusion of product term 2 in the sum</li>
+<li>PT3E: Enable inclusion of product term 3 in the sum</li>
+<li>PT4E: Enable inclusion of product term 4 in the sum</li>
+<li>PT5E: Enable inclusion of product term 5 in the sum</li>
+</ul>
 """
+
+    html = template.format(
+                bitsPerMacrocell,
+                LABCount,
+                bitCount,
+                byteCount
+                )
 
     tr = ""
     for i in range(MacrocellCount):
@@ -105,11 +163,39 @@ def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
 
 def generateHTMLForIOConfiguration(IOCount, bitOffset):
 
-    html = "<h2>I/O configuration</h2>\n"
-    html += str(BitsPerIO)+" bits configure one I/O block(?).\n"
+    template = """
+<h2>I/O configuration</h2>
+
+{:d} bits configure one I/O block(?).
+With {:d} I/O blocks this would make for {:d} bits ({:d} bytes) in total for I/O configuration.
+"""
+
     bitCount = IOCount * BitsPerIO
     byteCount = int(bitCount/8)
-    html += "With "+str(IOCount)+" I/O blocks this would make for "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for I/O configuration.<br/>\n"
+
+    html = template.format(
+                BitsPerIO,
+                IOCount,
+                bitCount,
+                byteCount
+                )
+
+    html += """
+<table>
+<tbody>
+<tr>
+<td>Input?</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>Bits 1,2: Direction</li>
+<li>Bit 3: ?</li>
+<li>Bit 4: Slew rate, 0=fast, 1=slow</li>
+<li>Bit 5,6: ?</li>
+</ul>
+"""
 
     tr = ""
     # TODO: Why 62?
