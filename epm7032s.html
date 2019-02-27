@@ -7,7 +7,7 @@
 
 On this page an attempt is made to document the bitstream format necessary to program the above programmable logic device.
 The presented information is obtained through reverse-engineering,
-which -sadly- is necessary since the vendor does not provide specification documents,
+which -sadly- is necessary since the vendor does not provide specification documents about the composition of a valid bitstream,
 which would be required for implementation of third-party software.
 At some point, hopefully, the information presented here
 will be sufficient to allow implementation of an Open Source bitstream writer for this device in the context of <a href="https://symbiflow.github.io/">SymbiFlow</a>.
@@ -19,7 +19,8 @@ The raw bitstream might have to be extracted from an Altera Quartus POF file fir
 <br/><br/>
 Keep in mind that as this is a third-party specification.
 It might never be accurate or complete.
-When you flash an incorrect bitstream into a programmable logic device, there is a good chance that you permanently break your device.
+There usually is no technical measure in a programmable logic device preventing you from loading a flawed bitstream
+and if you do so, there is a good chance that you permanently damage your device.
 Use the information on this page at your own risk.
 <br/><br/>
 The bitstream for the <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">EPM7032S</a> consists of 15033 bits in total.<br/>
@@ -67,11 +68,12 @@ It seems, the macrocell configuration bits appear in the following order in the 
 <td title="Bit 3: Enable PT3 to OR switch">PT3E</td>
 <td title="Bit 4: Enable PT4 to OR switch">PT4E</td>
 <td title="Bit 5: Enable PT5 to OR switch">PT5E</td>
-<td title="Bit 6: Enable global clock usage">GCLKE</td>
-<td title="Bit 7: Enable global clear usage">GCLRE</td>
+<td title="Bit 6: Clock select">CLKS</td>
+<td title="Bit 7: Clear select">CLRS</td>
 <td title="Bits 8-10: Unknown function" colspan=3>???</td>
-<td title="Bit 11: Select registered or latched output">RLS</td>
-<td title="Bit 13: Select global clock">GCLK</td>
+<td title="Bit 11: Select registered or latched output">DFFE</td>
+<td title="Bits 8-10: Unknown function">?</td>
+<td title="Bit 13: Select global clock">GCLKS</td>
 </tr>
 </tbody>
 </table>
@@ -83,12 +85,25 @@ It seems, the macrocell configuration bits appear in the following order in the 
 <li>PT4E: Enable inclusion of product term 4 in the sum</li>
 <li>PT5E: Enable inclusion of product term 5 in the sum</li>
 </ul>
-<h2>PIA-to-LAB routing configuration</h2>
+<h2>Selection of global signals for a LAB (PIA-to-LAB routing)</h2>
 Every LAB can use 36 global signals by routing them to the LAB from the PIA.<br/>
-A global signal is selected by enabling the corresponding switch/multiplexer: A '1' disables a PIA signal, a '0' enables it.<br/>
+A global signal is selected by enabling the corresponding switch/multiplexer: One bit switches one signal. A '1' bit disables a PIA signal, a '0' bit enables it.<br/>
 Caveat: Enabling multiple switches for one LAB signal may damage the device.<br/>
 Every LAB signal can be selected from 2 choices. With one bit per choice this makes for 72 bits per LAB and 144 bits (18 bytes) in total for PIA to LAB routing configuration.<br/>
 Assuming that every switch/multiplexer selects a different PIA signal, a maximum of 72 PIA signals is routable to one LAB.<br/>
+
+<h2>Selection of output enable signals</h2>
+This section has 22 bytes(?).
+
+Every I/O pin can be configured as output and select one of six signals as output enable signal.
+The output enable signals are usually active high: When the signal of is low, the pin is in high-impedance state.
+When it is high, the pin assumes the logic level defined by the output of the corresponding logic cell.
+It is also possible to use an inverted output enable signal and thus realize active-low output enable function.
+
+Each of the two LABs can select a total of 6 output enable signals from the signals available in the PIA.
+This is accomplished in a fashion similar to the selection of the global signals in a LAB (PIA-to-LAB routing):
+One bit selects one PIA signal as OE signal. A '1' bit indicates a disregarded signal, a '0' bit selects a PIA signal as output enable signal.
+Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>  
 
 <h2>I/O configuration</h2>
 
@@ -98,19 +113,61 @@ With 32 I/O blocks this would make for 192 bits (24 bytes) in total for I/O conf
 <table>
 <tbody>
 <tr>
-<td>Input?</td>
+<td title="Output enable select" colspan=3>OES</td>
+<td title="Slew rate select">SRS</td>
+<td>?</td>
+<td>?</td>
 </tr>
 </tbody>
 </table>
 
 <ul>
-<li>Bits 1,2: Direction</li>
-<li>Bit 3: ?</li>
+<li>Bits 1,2,3: Output enable select</li>
 <li>Bit 4: Slew rate, 0=fast, 1=slow</li>
 <li>Bit 5,6: ?</li>
 </ul>
+
 <h2>Usercode</h2>
+
 A 16-bit user electronic signature (usercode) is stored in the bitstream.
+It occupies it's last 16 bits.
+It's bits and bytes are in reversed order (additionally to the reversed order that bits are stored in a POF file).
+
+<h3>Example</h3>
+<table>
+<tr>
+<td rowspan=2>Last 3 bytes of the bitstream payload in the POF file</td>
+<td>0x9a</td>
+<td>0x57</td>
+<td>0x01</td>
+</tr>
+<tr>
+<td class=binary>1001 1010</td>
+<td class=binary>0101 0111</td>
+<td class=binary>0000 0001</td>
+</tr>
+<tr>
+<td rowspan=2>Bitstream bit order</td>
+<td class=binary>0101 1001</td>
+<td class=binary>1110 1010</td>
+<td class=binary>1000 0000</td>
+</tr>
+<tr>
+<td colspan=3 class=binary>0101 1001 1110 1010 1000 0000</td>
+</tr>
+<tr>
+<td>Last 16 bits of the bitstream</td>
+<td colspan=3 class=binary>1011 0011 1101 0101</td>
+</tr>
+<tr>
+<td>Inverted bit order</td>
+<td colspan=3 class=binary>1010 1011 1100 1101</td>
+</tr>
+<tr>
+<td>Usercode</td>
+<td colspan=3>0xABCD</td>
+</tr>
+</table>
 
 <h2>Unidentified functions</h2>
 The yet unidentified bits of the bitstream are expected to configure:
@@ -358,70 +415,64 @@ The yet unidentified bits of the bitstream are expected to configure:
 <tr><td>LAB B</td><td colspan=2>Macrocell 32</td><td colspan=13>M</td></tr>
 <tr><td>LAB A</td><td colspan=2>PIA-Mux 1-36</td><td colspan="2" title="Bits 14496-14497">P</td><td colspan="2" title="Bits 14498-14499">P</td><td colspan="2" title="Bits 14500-14501">P</td><td colspan="2" title="Bits 14502-14503">P</td><td colspan="2" title="Bits 14504-14505">P</td><td colspan="2" title="Bits 14506-14507">P</td><td colspan="2" title="Bits 14508-14509">P</td><td colspan="2" title="Bits 14510-14511">P</td><td colspan="2" title="Bits 14512-14513">P</td><td colspan="2" title="Bits 14514-14515">P</td><td colspan="2" title="Bits 14516-14517">P</td><td colspan="2" title="Bits 14518-14519">P</td><td colspan="2" title="Bits 14520-14521">P</td><td colspan="2" title="Bits 14522-14523">P</td><td colspan="2" title="Bits 14524-14525">P</td><td colspan="2" title="Bits 14526-14527">P</td><td colspan="2" title="Bits 14528-14529">P</td><td colspan="2" title="Bits 14530-14531">P</td><td colspan="2" title="Bits 14532-14533">P</td><td colspan="2" title="Bits 14534-14535">P</td><td colspan="2" title="Bits 14536-14537">P</td><td colspan="2" title="Bits 14538-14539">P</td><td colspan="2" title="Bits 14540-14541">P</td><td colspan="2" title="Bits 14542-14543">P</td><td colspan="2" title="Bits 14544-14545">P</td><td colspan="2" title="Bits 14546-14547">P</td><td colspan="2" title="Bits 14548-14549">P</td><td colspan="2" title="Bits 14550-14551">P</td><td colspan="2" title="Bits 14552-14553">P</td><td colspan="2" title="Bits 14554-14555">P</td><td colspan="2" title="Bits 14556-14557">P</td><td colspan="2" title="Bits 14558-14559">P</td><td colspan="2" title="Bits 14560-14561">P</td><td colspan="2" title="Bits 14562-14563">P</td><td colspan="2" title="Bits 14564-14565">P</td><td colspan="2" title="Bits 14566-14567">P</td></tr>
 <tr><td>LAB B</td><td colspan=2>PIA-Mux 37-72</td><td colspan="2" title="Bits 14568-14569">P</td><td colspan="2" title="Bits 14570-14571">P</td><td colspan="2" title="Bits 14572-14573">P</td><td colspan="2" title="Bits 14574-14575">P</td><td colspan="2" title="Bits 14576-14577">P</td><td colspan="2" title="Bits 14578-14579">P</td><td colspan="2" title="Bits 14580-14581">P</td><td colspan="2" title="Bits 14582-14583">P</td><td colspan="2" title="Bits 14584-14585">P</td><td colspan="2" title="Bits 14586-14587">P</td><td colspan="2" title="Bits 14588-14589">P</td><td colspan="2" title="Bits 14590-14591">P</td><td colspan="2" title="Bits 14592-14593">P</td><td colspan="2" title="Bits 14594-14595">P</td><td colspan="2" title="Bits 14596-14597">P</td><td colspan="2" title="Bits 14598-14599">P</td><td colspan="2" title="Bits 14600-14601">P</td><td colspan="2" title="Bits 14602-14603">P</td><td colspan="2" title="Bits 14604-14605">P</td><td colspan="2" title="Bits 14606-14607">P</td><td colspan="2" title="Bits 14608-14609">P</td><td colspan="2" title="Bits 14610-14611">P</td><td colspan="2" title="Bits 14612-14613">P</td><td colspan="2" title="Bits 14614-14615">P</td><td colspan="2" title="Bits 14616-14617">P</td><td colspan="2" title="Bits 14618-14619">P</td><td colspan="2" title="Bits 14620-14621">P</td><td colspan="2" title="Bits 14622-14623">P</td><td colspan="2" title="Bits 14624-14625">P</td><td colspan="2" title="Bits 14626-14627">P</td><td colspan="2" title="Bits 14628-14629">P</td><td colspan="2" title="Bits 14630-14631">P</td><td colspan="2" title="Bits 14632-14633">P</td><td colspan="2" title="Bits 14634-14635">P</td><td colspan="2" title="Bits 14636-14637">P</td><td colspan="2" title="Bits 14638-14639">P</td></tr>
-<tr><td colspan=3>Unidentified word 1</td><td colspan=6 title="Bits 14640-14645">W</td></tr>
-<tr><td colspan=3>Unidentified word 2</td><td colspan=6 title="Bits 14646-14651">W</td></tr>
-<tr><td colspan=3>Unidentified word 3</td><td colspan=6 title="Bits 14652-14657">W</td></tr>
-<tr><td colspan=3>Unidentified word 4</td><td colspan=6 title="Bits 14658-14663">W</td></tr>
-<tr><td colspan=3>Unidentified word 5</td><td colspan=6 title="Bits 14664-14669">W</td></tr>
-<tr><td colspan=3>Unidentified word 6</td><td colspan=6 title="Bits 14670-14675">W</td></tr>
-<tr><td colspan=3>Unidentified word 7</td><td colspan=6 title="Bits 14676-14681">W</td></tr>
-<tr><td colspan=3>Unidentified word 8</td><td colspan=6 title="Bits 14682-14687">W</td></tr>
-<tr><td colspan=3>Unidentified word 9</td><td colspan=6 title="Bits 14688-14693">W</td></tr>
-<tr><td colspan=3>Unidentified word 10</td><td colspan=6 title="Bits 14694-14699">W</td></tr>
-<tr><td colspan=3>Unidentified word 11</td><td colspan=6 title="Bits 14700-14705">W</td></tr>
-<tr><td colspan=3>Unidentified word 12</td><td colspan=6 title="Bits 14706-14711">W</td></tr>
-<tr><td colspan=3>Unidentified word 13</td><td colspan=6 title="Bits 14712-14717">W</td></tr>
-<tr><td colspan=3>Unidentified word 14</td><td colspan=6 title="Bits 14718-14723">W</td></tr>
-<tr><td colspan=3>Unidentified word 15</td><td colspan=6 title="Bits 14724-14729">W</td></tr>
-<tr><td colspan=3>Unidentified word 16</td><td colspan=6 title="Bits 14730-14735">W</td></tr>
-<tr><td colspan=3>Unidentified word 17</td><td colspan=6 title="Bits 14736-14741">W</td></tr>
-<tr><td colspan=3>Unidentified word 18</td><td colspan=6 title="Bits 14742-14747">W</td></tr>
-<tr><td colspan=3>Unidentified word 19</td><td colspan=6 title="Bits 14748-14753">W</td></tr>
-<tr><td colspan=3>Unidentified word 20</td><td colspan=6 title="Bits 14754-14759">W</td></tr>
-<tr><td colspan=3>Unidentified word 21</td><td colspan=6 title="Bits 14760-14765">W</td></tr>
-<tr><td colspan=3>Unidentified word 22</td><td colspan=6 title="Bits 14766-14771">W</td></tr>
-<tr><td colspan=3>Unidentified word 23</td><td colspan=6 title="Bits 14772-14777">W</td></tr>
-<tr><td colspan=3>Unidentified word 24</td><td colspan=6 title="Bits 14778-14783">W</td></tr>
-<tr><td colspan=3>Unidentified word 25</td><td colspan=6 title="Bits 14784-14789">W</td></tr>
-<tr><td colspan=3>Unidentified word 26</td><td colspan=6 title="Bits 14790-14795">W</td></tr>
-<tr><td colspan=3>Unidentified word 27</td><td colspan=6 title="Bits 14796-14801">W</td></tr>
-<tr><td colspan=3>Unidentified word 28</td><td colspan=6 title="Bits 14802-14807">W</td></tr>
-<tr><td colspan=3>Unidentified word 29</td><td colspan=6 title="Bits 14808-14813">W</td></tr>
-<tr><td colspan=3>Unidentified word 30</td><td colspan=6 title="Bits 14814-14819">W</td></tr>
-<tr><td colspan=3>I/O 1</td><td colspan=6 title="Bits 14820-14825">IO</td></tr>
-<tr><td colspan=3>I/O 2</td><td colspan=6 title="Bits 14826-14831">IO</td></tr>
-<tr><td colspan=3>I/O 3</td><td colspan=6 title="Bits 14832-14837">IO</td></tr>
-<tr><td colspan=3>I/O 4</td><td colspan=6 title="Bits 14838-14843">IO</td></tr>
-<tr><td colspan=3>I/O 5</td><td colspan=6 title="Bits 14844-14849">IO</td></tr>
-<tr><td colspan=3>I/O 6</td><td colspan=6 title="Bits 14850-14855">IO</td></tr>
-<tr><td colspan=3>I/O 7</td><td colspan=6 title="Bits 14856-14861">IO</td></tr>
-<tr><td colspan=3>I/O 8</td><td colspan=6 title="Bits 14862-14867">IO</td></tr>
-<tr><td colspan=3>I/O 9</td><td colspan=6 title="Bits 14868-14873">IO</td></tr>
-<tr><td colspan=3>I/O 10</td><td colspan=6 title="Bits 14874-14879">IO</td></tr>
-<tr><td colspan=3>I/O 11</td><td colspan=6 title="Bits 14880-14885">IO</td></tr>
-<tr><td colspan=3>I/O 12</td><td colspan=6 title="Bits 14886-14891">IO</td></tr>
-<tr><td colspan=3>I/O 13</td><td colspan=6 title="Bits 14892-14897">IO</td></tr>
-<tr><td colspan=3>I/O 14</td><td colspan=6 title="Bits 14898-14903">IO</td></tr>
-<tr><td colspan=3>I/O 15</td><td colspan=6 title="Bits 14904-14909">IO</td></tr>
-<tr><td colspan=3>I/O 16</td><td colspan=6 title="Bits 14910-14915">IO</td></tr>
-<tr><td colspan=3>I/O 17</td><td colspan=6 title="Bits 14916-14921">IO</td></tr>
-<tr><td colspan=3>I/O 18</td><td colspan=6 title="Bits 14922-14927">IO</td></tr>
-<tr><td colspan=3>I/O 19</td><td colspan=6 title="Bits 14928-14933">IO</td></tr>
-<tr><td colspan=3>I/O 20</td><td colspan=6 title="Bits 14934-14939">IO</td></tr>
-<tr><td colspan=3>I/O 21</td><td colspan=6 title="Bits 14940-14945">IO</td></tr>
-<tr><td colspan=3>I/O 22</td><td colspan=6 title="Bits 14946-14951">IO</td></tr>
-<tr><td colspan=3>I/O 23</td><td colspan=6 title="Bits 14952-14957">IO</td></tr>
-<tr><td colspan=3>I/O 24</td><td colspan=6 title="Bits 14958-14963">IO</td></tr>
-<tr><td colspan=3>I/O 25</td><td colspan=6 title="Bits 14964-14969">IO</td></tr>
-<tr><td colspan=3>I/O 26</td><td colspan=6 title="Bits 14970-14975">IO</td></tr>
-<tr><td colspan=3>I/O 27</td><td colspan=6 title="Bits 14976-14981">IO</td></tr>
-<tr><td colspan=3>I/O 28</td><td colspan=6 title="Bits 14982-14987">IO</td></tr>
-<tr><td colspan=3>I/O 29</td><td colspan=6 title="Bits 14988-14993">IO</td></tr>
-<tr><td colspan=3>I/O 30</td><td colspan=6 title="Bits 14994-14999">IO</td></tr>
-<tr><td colspan=3>I/O 31</td><td colspan=6 title="Bits 15000-15005">IO</td></tr>
-<tr><td colspan=3>I/O 32</td><td colspan=6 title="Bits 15006-15011">IO</td></tr>
-<tr><td colspan=3>Extra bits</td><td title="15012">?</td><td title="15013">?</td><td title="15014">?</td><td title="15015">?</td><td title="15016">?</td><td title="15017">?</td><td title="15018">?</td><td title="15019">?</td><td title="15020">?</td><td title="15021">?</td><td title="15022">?</td><td title="15023">?</td><td title="15024">?</td><td title="15025">?</td><td title="15026">?</td><td title="15027">?</td><td title="15028">?</td></tr>
-<tr><td colspan=3>Usercode</td><td colspan=7 title="Bits 15029-15036">Bits 7-1</td><td title="Bit 15036: Unknown function">?</td><td colspan=9 title="Bits 15037-15046">Bits 16-8</td></tr>
+<tr>
+<td colspan=3>Unknown function</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+<td>?</td>
+</tr><tr><td colspan=3>I/O block 1</td><td colspan=6 title="Bits 14816-14821">IO</td></tr>
+<tr><td colspan=3>I/O block 2</td><td colspan=6 title="Bits 14822-14827">IO</td></tr>
+<tr><td colspan=3>I/O block 3</td><td colspan=6 title="Bits 14828-14833">IO</td></tr>
+<tr><td colspan=3>I/O block 4</td><td colspan=6 title="Bits 14834-14839">IO</td></tr>
+<tr><td colspan=3>I/O block 5</td><td colspan=6 title="Bits 14840-14845">IO</td></tr>
+<tr><td colspan=3>I/O block 6</td><td colspan=6 title="Bits 14846-14851">IO</td></tr>
+<tr><td colspan=3>I/O block 7</td><td colspan=6 title="Bits 14852-14857">IO</td></tr>
+<tr><td colspan=3>I/O block 8</td><td colspan=6 title="Bits 14858-14863">IO</td></tr>
+<tr><td colspan=3>I/O block 9</td><td colspan=6 title="Bits 14864-14869">IO</td></tr>
+<tr><td colspan=3>I/O block 10</td><td colspan=6 title="Bits 14870-14875">IO</td></tr>
+<tr><td colspan=3>I/O block 11</td><td colspan=6 title="Bits 14876-14881">IO</td></tr>
+<tr><td colspan=3>I/O block 12</td><td colspan=6 title="Bits 14882-14887">IO</td></tr>
+<tr><td colspan=3>I/O block 13</td><td colspan=6 title="Bits 14888-14893">IO</td></tr>
+<tr><td colspan=3>I/O block 14</td><td colspan=6 title="Bits 14894-14899">IO</td></tr>
+<tr><td colspan=3>I/O block 15</td><td colspan=6 title="Bits 14900-14905">IO</td></tr>
+<tr><td colspan=3>I/O block 16</td><td colspan=6 title="Bits 14906-14911">IO</td></tr>
+<tr><td colspan=3>I/O block 17</td><td colspan=6 title="Bits 14912-14917">IO</td></tr>
+<tr><td colspan=3>I/O block 18</td><td colspan=6 title="Bits 14918-14923">IO</td></tr>
+<tr><td colspan=3>I/O block 19</td><td colspan=6 title="Bits 14924-14929">IO</td></tr>
+<tr><td colspan=3>I/O block 20</td><td colspan=6 title="Bits 14930-14935">IO</td></tr>
+<tr><td colspan=3>I/O block 21</td><td colspan=6 title="Bits 14936-14941">IO</td></tr>
+<tr><td colspan=3>I/O block 22</td><td colspan=6 title="Bits 14942-14947">IO</td></tr>
+<tr><td colspan=3>I/O block 23</td><td colspan=6 title="Bits 14948-14953">IO</td></tr>
+<tr><td colspan=3>I/O block 24</td><td colspan=6 title="Bits 14954-14959">IO</td></tr>
+<tr><td colspan=3>I/O block 25</td><td colspan=6 title="Bits 14960-14965">IO</td></tr>
+<tr><td colspan=3>I/O block 26</td><td colspan=6 title="Bits 14966-14971">IO</td></tr>
+<tr><td colspan=3>I/O block 27</td><td colspan=6 title="Bits 14972-14977">IO</td></tr>
+<tr><td colspan=3>I/O block 28</td><td colspan=6 title="Bits 14978-14983">IO</td></tr>
+<tr><td colspan=3>I/O block 29</td><td colspan=6 title="Bits 14984-14989">IO</td></tr>
+<tr><td colspan=3>I/O block 30</td><td colspan=6 title="Bits 14990-14995">IO</td></tr>
+<tr><td colspan=3>I/O block 31</td><td colspan=6 title="Bits 14996-15001">IO</td></tr>
+<tr><td colspan=3>I/O block 32</td><td colspan=6 title="Bits 15002-15007">IO</td></tr>
+<tr><td colspan=3>Extra bits</td><td title="15188">?</td><td title="15189">?</td><td title="15190">?</td><td title="15191">?</td><td title="15192">?</td><td title="15193">?</td><td title="15194">?</td><td title="15195">?</td><td title="15196">?</td></tr>
+<tr><td colspan=3>Usercode</td><td colspan=16 title="Bits 15213-15197">Bits 16-1</td></tr>
 
 </table>
 </body>

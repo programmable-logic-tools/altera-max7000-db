@@ -14,6 +14,21 @@ td
     min-width: 15px;
 }
 
+td[colspan=2]
+{
+    min-width: 30px;
+}
+
+td[colspan=3]
+{
+    min-width: 45px;
+}
+
+td.binary
+{
+    font-family: fixed;
+}
+
 td.empty
 {
     border: none;
