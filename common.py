@@ -140,9 +140,9 @@ It seems, the macrocell configuration bits appear in the following order in the 
 
 def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
 
-    html = "<h2>PIA-to-LAB routing configuration</h2>\n"
+    html = "<h2>Selection of global signals for a LAB (PIA-to-LAB routing)</h2>\n"
     html += "Every LAB can use "+str(GlobalSignalsPerLAB)+" global signals by routing them to the LAB from the PIA.<br/>\n"
-    html += "A global signal is selected by enabling the corresponding switch/multiplexer: A '1' disables a PIA signal, a '0' enables it.<br/>\n"
+    html += "A global signal is selected by enabling the corresponding switch/multiplexer: One bit switches one signal. A '1' bit disables a PIA signal, a '0' bit enables it.<br/>\n"
     html += "Caveat: Enabling multiple switches for one LAB signal may damage the device.<br/>\n"
     bitCount = LABCount * GlobalSignalsPerLAB * PIAtoLABmuxCount
     byteCount = int(bitCount/8)
@@ -159,6 +159,33 @@ def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
         tr += "</tr>\n"
 
     return (html, tr, bitCount)
+
+
+def generateHTMLForOEConfiguration(bitOffset):
+    html = """
+<h2>Selection of output enable signals</h2>
+This section has 22 bytes(?).
+
+Every I/O pin can be configured as output and select one of six signals as output enable signal.
+The output enable signals are usually active high: When the signal of is low, the pin is in high-impedance state.
+When it is high, the pin assumes the logic level defined by the output of the corresponding logic cell.
+It is also possible to use an inverted output enable signal and thus realize active-low output enable function.
+
+Each of the two LABs can select a total of 6 output enable signals from the signals available in the PIA.
+This is accomplished in a fashion similar to the selection of the global signals in a LAB (PIA-to-LAB routing):
+One bit selects one PIA signal as OE signal. A '1' bit indicates a disregarded signal, a '0' bit selects a PIA signal as output enable signal.
+Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>  
+"""
+
+    tr = """<tr>
+<td colspan=3>Unknown function</td>
+"""
+    for i in range(22):
+        tr += "<td>?</td>\n"
+
+    tr += "</tr>"
+
+    return (html, tr, 22*8)
 
 
 def generateHTMLForIOConfiguration(IOCount, bitOffset):
@@ -184,29 +211,26 @@ With {:d} I/O blocks this would make for {:d} bits ({:d} bytes) in total for I/O
 <table>
 <tbody>
 <tr>
-<td>Input?</td>
+<td title="Output enable select" colspan=3>OES</td>
+<td title="Slew rate select">SRS</td>
+<td>?</td>
+<td>?</td>
 </tr>
 </tbody>
 </table>
 
 <ul>
-<li>Bits 1,2: Direction</li>
-<li>Bit 3: ?</li>
+<li>Bits 1,2,3: Output enable select</li>
 <li>Bit 4: Slew rate, 0=fast, 1=slow</li>
 <li>Bit 5,6: ?</li>
 </ul>
 """
 
     tr = ""
-    # TODO: Why 62?
-    for i in range(62):
+    for i in range(IOCount):
         labChar = chr(ord('A') + (i / MacrocellsPerLAB))
-        if i in range(30,62):
-            s = "I/O {:d}".format(i-29)
-            symbol = "IO"
-        else:
-            s = "Unidentified word {:d}".format(i+1)
-            symbol = "W"
+        s = "I/O block {:d}".format(i+1)
+        symbol = "IO"
         tr += "<tr><td colspan=3>{:s}</td>".format(s)
         #tr += "<td>LAB {:s}</td>".format(labChar)
         #tr += "<td colspan=2>IO {:d}</td>".format(i+1)

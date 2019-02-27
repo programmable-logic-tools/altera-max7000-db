@@ -24,7 +24,7 @@ page = """<html>
 
 On this page an attempt is made to document the bitstream format necessary to program the above programmable logic device.
 The presented information is obtained through reverse-engineering,
-which -sadly- is necessary since the vendor does not provide specification documents,
+which -sadly- is necessary since the vendor does not provide specification documents about the composition of a valid bitstream,
 which would be required for implementation of third-party software.
 At some point, hopefully, the information presented here
 will be sufficient to allow implementation of an Open Source bitstream writer for this device in the context of <a href="https://symbiflow.github.io/">SymbiFlow</a>.
@@ -36,7 +36,8 @@ The raw bitstream might have to be extracted from an Altera Quartus POF file fir
 <br/><br/>
 Keep in mind that as this is a third-party specification.
 It might never be accurate or complete.
-When you flash an incorrect bitstream into a programmable logic device, there is a good chance that you permanently break your device.
+There usually is no technical measure in a programmable logic device preventing you from loading a flawed bitstream
+and if you do so, there is a good chance that you permanently damage your device.
 Use the information on this page at your own risk.
 <br/><br/>
 The bitstream for the <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">EPM7032S</a> consists of """+str(bitCount)+""" bits in total.<br/>
@@ -78,6 +79,16 @@ table += tr
 bitOffset += bitCount
 
 #
+# OE configuration
+#
+(htm, tr, bitCount) = generateHTMLForOEConfiguration(
+            bitOffset = bitOffset
+            )
+page += htm
+table += tr
+bitOffset += bitCount
+
+#
 # I/O configuration
 #
 (htm, tr, bitCount) = generateHTMLForIOConfiguration(
@@ -91,7 +102,7 @@ bitOffset += bitCount
 #
 # Extra bits of unknown function
 #
-(htm, tr, bitCount) = generateHTMLForExtraBits(17, bitOffset)
+(htm, tr, bitCount) = generateHTMLForExtraBits(9, bitOffset)
 #page += htm
 table += tr
 bitOffset += bitCount
