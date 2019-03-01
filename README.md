@@ -7,4 +7,4 @@ The generated documentation can be found here:
 
 https://programmable-logic-tools.github.io/altera-max7000-db/epm7032s.html
 
-All content is licensed under the GNU GPL v3.
+All content is licensed under the GNU Affero GPL v3.
