@@ -7,6 +7,7 @@
 
 import sys
 from common import *
+from partitions import *
 
 LABCount = 2
 # Number of PIA-to-LAB muxes per LAB signal
@@ -42,6 +43,46 @@ Use the information on this page at your own risk.
 <br/><br/>
 The bitstream for the <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">EPM7032S</a> consists of """+str(bitCount)+""" bits in total.<br/>
 """
+
+
+partitions = [
+    {
+        "title": "Product term configuration",
+        "bitCount": 2*16*5*((36*2)+16),
+        "formula": "2 logic array blocks x 16 macrocells x 5 product terms x (36x2 + 16) selectable input signals x 1 bit per signal"
+    },
+    {
+        "title": "Macrocell logic configuration",
+        "bitCount": 2*16*13,
+        "formula": "2 logic array blocks x 16 macrocells x 13 bits per macrocell"
+    },
+    {
+        "title": "PIA-to-LAB routing",
+        "bitCount": 2*36*2,
+        "formula": "2 logic array blocks x 36 signals from global routing pool x 2 choices per router x 1 bit per choice"
+    },
+    {
+        "title": "Output enable?",
+        "bitCount": 22*8,
+        "formula": "32 i/o pins x ?"
+    },
+    {
+        "title": "I/O block configuration",
+        "bitCount": 32*6,
+        "formula": "32 I/O blocks x 6 bits per block"
+    },
+    {
+        "title": "Unkown function",
+        "bitCount": 9,
+    },
+    {
+        "title": "Usercode",
+        "bitCount": 16
+    }
+    ]
+
+page += partitionsToTable(partitions)
+
 
 #
 # Product terms

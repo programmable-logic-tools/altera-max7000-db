@@ -49,7 +49,7 @@ Another 16 bits switch regional foldback signals from outputs of macrocells with
                 if pt > 0:
                     tr += "<tr>"
                 ptString = str(pt+1)
-                tr += "<td title=\"Product term "+ptString+"\">PT"+ptString+"</td>"
+                tr += "<td title=\"Product term "+ptString+"\">PT"+ptString+"</td>\n"
                 for bit in range(BitsPerProductTerm):
                     if bit < 36*2:
                         # Global signal
@@ -57,7 +57,7 @@ Another 16 bits switch regional foldback signals from outputs of macrocells with
                     else:
                         # Regional foldback signal
                         symbol = "R"
-                    tr += "<td title=\"Bit "+str(bitOffset+bit)+"\">"+symbol+"</td>"
+                    tr += "<td title=\"Bit "+str(bitOffset+bit)+"\">"+symbol+"</td>\n"
                 bitOffset += BitsPerProductTerm
                 tr += "</tr>\n"
 
