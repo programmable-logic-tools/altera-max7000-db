@@ -21,6 +21,19 @@ The bitstream writer will take care of flipping those bits where necessary.
 
 ## Note
 
-Please note, that as the reverse-engineering of the MAX7000 series devices is still in progress
-this document may be subject to fundamental changes.
+Please note, that as the reverse-engineering of the MAX7000 series devices is still in progress,
+so this document may be subject to fundamental changes.
 Please get in touch with the author if you require a stable version.
+
+## Top-level block types
+
+A MAX7000 series device can be partitioned into a number of different block types.
+
+| Block type | FASM abbreviation | Index range (MAX7032S) |
+| -- | -- | -- |
+| Logic array block | lab_&lt;x&gt; | char x = [A;B] | 
+| Logic cell | lc&lt;n&gt; | int n = [1;32] |
+| Input/Output block | io&lt;n&gt; | int n = [1;32] |
+| Dedicated input | input&lt;n&gt; | int n = [1;4] |
+| Output enable configuration | oe&lt;n&gt; | int n = [1;6] |
+| Global clock configuration | gclk&lt;n&gt; | int n = [1;2] |
