@@ -63,7 +63,7 @@ partitions = [
     },
     {
         "title": "Output enable?",
-        "bitCount": 22*8,
+        "bitCount": 44*4-2,
         "formula": "32 i/o pins x ?"
     },
     {
@@ -73,7 +73,7 @@ partitions = [
     },
     {
         "title": "Unkown function",
-        "bitCount": 9,
+        "bitCount": 11,
     },
     {
         "title": "Usercode",
