@@ -29,7 +29,7 @@ Please get in touch with the author if you require a stable version.
 
 A MAX7000 series device can be partitioned into a number of different block types.
 
-| Block type | FASM abbreviation | Index range (MAX7032S) |
+| Block type | FASM notation | Valid index range (MAX7032S) |
 | -- | -- | -- |
 | Logic array block | lab_&lt;x&gt; | char x = [A;B] | 
 | Logic cell | lc&lt;n&gt; | int n = [1;32] |
@@ -37,3 +37,21 @@ A MAX7000 series device can be partitioned into a number of different block type
 | Dedicated input | input&lt;n&gt; | int n = [1;4] |
 | Output enable configuration | oe&lt;n&gt; | int n = [1;6] |
 | Global clock configuration | gclk&lt;n&gt; | int n = [1;2] |
+
+## Logic cell
+
+A logic cell has several configurable features.
+
+| Feature | FASM notation | Valid index range |
+| -- | -- | -- |
+| Product term | pt&lt;n&gt; | int n = [1;5] |
+| Non-inverted product term input | pt&lt;n&gt;.input[&lt;m&gt;] | int m = [0;35] |
+| Inverted product term input | pt&lt;n&gt;.inverted_input[&lt;m&gt;] | int m = [0;35] |
+| Shareable expander product term input | pt&lt;n&gt;.sexp[&lt;m&gt;] | int m = [0;15] |
+| From PT to or gate | pt&lt;n&gt;.enabled | |
+| XOR gate logic | input_inverted | |
+| Fast input from pin | enable_fast_input | |
+| Global clear | use_gclr | |
+| Glocal clock | use_gclk | |
+| Preset | enable_preset | |
+| Latch | ff_bypass | |
