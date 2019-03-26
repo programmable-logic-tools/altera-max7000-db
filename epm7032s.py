@@ -63,13 +63,22 @@ partitions = [
     },
     {
         "title": "Output enable?",
-        "bitCount": 44*4-2,
-        "formula": "32 i/o pins x ?"
+        "bitCount": 32*4,
+        "formula": "32 macrocells or pins x 4 bits"
     },
     {
-        "title": "I/O block configuration",
+        "title": "Unknown function",
+        "bitCount": 16,
+    },
+    {
+        "title": "Output enable?",
+        "bitCount": 6*5,
+        "formula": "6 global output enable signals x 5 bits per output enable"
+    },
+    {
+        "title": "Pin configuration",
         "bitCount": 32*6,
-        "formula": "32 I/O blocks x 6 bits per block"
+        "formula": "32 pins x 6 bits per block"
     },
     {
         "title": "Unkown function",

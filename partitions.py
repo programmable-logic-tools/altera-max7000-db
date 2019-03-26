@@ -5,15 +5,15 @@
 #
 def partitionsToTable(partitions):
     chapterPartitioning = """
-<h2>Bitstream partitioning</h2>
+<h2>Bitstream overview</h2>
 <table>
 <tr>
-<th>Partition no.</th>
-<th>Content</th>
+<th></th>
+<th>Function</th>
 <th>from bit</th>
 <th>to bit (incl.)</th>
 <th>Bit count</th>
-<th>Calculation</th>
+<th>Composed of</th>
 </tr>
 """
     
