@@ -58,20 +58,11 @@ partitions = [
     },
     {
         "title": "PIA-to-LAB routing",
-        "bitCount": 2*36*2,
-        "formula": "2 logic array blocks x 36 signals from global routing pool x 2 choices per router x 1 bit per choice"
+        "bitCount": 4*36*2,
+        "formula": "2 logic array blocks x 36 signals from global routing pool x 4 choices per router x 1 bit per choice"
     },
     {
-        "title": "Output enable?",
-        "bitCount": 32*4,
-        "formula": "32 macrocells or pins x 4 bits"
-    },
-    {
-        "title": "Unknown function",
-        "bitCount": 16,
-    },
-    {
-        "title": "Output enable?",
+        "title": "Output buffer tri-state control",
         "bitCount": 6*5,
         "formula": "6 global output enable signals x 5 bits per output enable"
     },

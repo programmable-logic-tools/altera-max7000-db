@@ -166,15 +166,16 @@ def generateHTMLForOEConfiguration(bitOffset):
 <h2>Selection of output enable signals</h2>
 This section has 22 bytes(?).
 
-Every I/O pin can be configured as output and select one of six signals as output enable signal.
+Every I/O pin can be configured as output and select one of six signals as output enable signal (tri-state control signal).
 The output enable signals are usually active high: When the signal of is low, the pin is in high-impedance state.
-When it is high, the pin assumes the logic level defined by the output of the corresponding logic cell.
+When it is high, the pin assumes the logic level defined by the output of the corresponding macrocell.
 It is also possible to use an inverted output enable signal and thus realize active-low output enable function.
 
-Each of the two LABs can select a total of 6 output enable signals from the signals available in the PIA.
-This is accomplished in a fashion similar to the selection of the global signals in a LAB (PIA-to-LAB routing):
+A total of 6 global output enable signals are available,
+which somehow can be chosen from PIA signals,
+probably similar to the way signals are routed to a LAB:
 One bit selects one PIA signal as OE signal. A '1' bit indicates a disregarded signal, a '0' bit selects a PIA signal as output enable signal.
-Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>  
+Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>
 """
 
     tr = """<tr>
