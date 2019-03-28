@@ -55,35 +55,20 @@ The bitstream for the <a href="https://www.intel.com/content/dam/www/programmabl
 <td>3</td>
 <td>PIA-to-LAB routing</td>
 <td>14497</td>
-<td>14640</td>
-<td>144</td>
-<td>2 logic array blocks x 36 signals from global routing pool x 2 choices per router x 1 bit per choice</td>
+<td>14784</td>
+<td>288</td>
+<td>2 logic array blocks x 36 signals from global routing pool x 4 choices per router x 1 bit per choice</td>
 </tr>
 <tr>
 <td>4</td>
-<td>Output enable?</td>
-<td>14641</td>
-<td>14768</td>
-<td>128</td>
-<td>32 macrocells or pins x 4 bits</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Unknown function</td>
-<td>14769</td>
-<td>14784</td>
-<td>16</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Output enable?</td>
+<td>Output buffer tri-state control</td>
 <td>14785</td>
 <td>14814</td>
 <td>30</td>
 <td>6 global output enable signals x 5 bits per output enable</td>
 </tr>
 <tr>
-<td>7</td>
+<td>5</td>
 <td>Pin configuration</td>
 <td>14815</td>
 <td>15006</td>
@@ -91,14 +76,14 @@ The bitstream for the <a href="https://www.intel.com/content/dam/www/programmabl
 <td>32 pins x 6 bits per block</td>
 </tr>
 <tr>
-<td>8</td>
+<td>6</td>
 <td>Unkown function</td>
 <td>15007</td>
 <td>15017</td>
 <td>11</td>
 </tr>
 <tr>
-<td>9</td>
+<td>7</td>
 <td>Usercode</td>
 <td>15018</td>
 <td>15033</td>
@@ -177,15 +162,16 @@ Assuming that every switch/multiplexer selects a different PIA signal, a maximum
 <h2>Selection of output enable signals</h2>
 This section has 22 bytes(?).
 
-Every I/O pin can be configured as output and select one of six signals as output enable signal.
+Every I/O pin can be configured as output and select one of six signals as output enable signal (tri-state control signal).
 The output enable signals are usually active high: When the signal of is low, the pin is in high-impedance state.
-When it is high, the pin assumes the logic level defined by the output of the corresponding logic cell.
+When it is high, the pin assumes the logic level defined by the output of the corresponding macrocell.
 It is also possible to use an inverted output enable signal and thus realize active-low output enable function.
 
-Each of the two LABs can select a total of 6 output enable signals from the signals available in the PIA.
-This is accomplished in a fashion similar to the selection of the global signals in a LAB (PIA-to-LAB routing):
+A total of 6 global output enable signals are available,
+which somehow can be chosen from PIA signals,
+probably similar to the way signals are routed to a LAB:
 One bit selects one PIA signal as OE signal. A '1' bit indicates a disregarded signal, a '0' bit selects a PIA signal as output enable signal.
-Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>  
+Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>
 
 <h2>I/O configuration</h2>
 
