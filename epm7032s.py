@@ -11,7 +11,7 @@ from partitions import *
 
 LABCount = 2
 # Number of PIA-to-LAB muxes per LAB signal
-PIAtoLABmuxCount = 2
+PIAtoLABmuxCount = 4
 IOCount = 32
 bitCount = 15033
 
