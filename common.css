@@ -1,4 +1,12 @@
 
+div#content
+{
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 20px;
+    border: 1px solid gray;
+}
+
 table
 {
     font-size: 10pt;
@@ -12,6 +20,16 @@ td
 {
     border: 1px solid black;
     min-width: 15px;
+}
+
+td[colspan=2]
+{
+    min-width: 30px;
+}
+
+td[colspan=3]
+{
+    min-width: 45px;
 }
 
 td.binary

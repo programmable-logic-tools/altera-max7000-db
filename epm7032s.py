@@ -21,7 +21,10 @@ page = """<html>
 <link rel="stylesheet" type="text/css" href="common.css"/>
 </head>
 <body>
-<h1>Altera EPM7032S CPLD bitstream format</h1>
+<div id="content">
+<h1>The Altera EPM7032S CPLD bitstream format</h1>
+
+<h2>Introduction</h2>
 
 On this page an attempt is made to document the bitstream format necessary to program the above programmable logic device.
 The presented information is obtained through reverse-engineering,
@@ -35,13 +38,16 @@ The corresponding generator can be found <a href="https://github.com/programmabl
 The raw bitstream might have to be extracted from an Altera Quartus POF file first.
 <a href="https://github.com/programmable-logic-tools/libalterapof/tree/master/doc">libalterpof</a> may help with that.
 <br/><br/>
-Keep in mind that as this is a third-party specification.
-It might never be accurate or complete.
+The bitstream for the EPM7032S consists of """+str(bitCount)+""" bits in total.<br/>
+The official device family datasheet can be found <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">here</a>. 
+
+<h2>Disclaimer</h2>
+
+Keep in mind that as this is a third-party specification, it might never be accurate or complete.
 There usually is no technical measure in a programmable logic device preventing you from loading a flawed bitstream
 and if you do so, there is a good chance that you permanently damage your device.
 Use the information on this page at your own risk.
-<br/><br/>
-The bitstream for the <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">EPM7032S</a> consists of """+str(bitCount)+""" bits in total.<br/>
+<br/>
 """
 
 
@@ -184,7 +190,7 @@ page += """<h2>Bit table</h2>
 </table>
 """
 
-page += "</body>\n</html>"
+page += "</div>\n</body>\n</html>"
 
 # Write to file
 f = open("epm7032s.html", "w")
