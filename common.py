@@ -161,22 +161,25 @@ def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
     return (html, tr, bitCount)
 
 
-def generateHTMLForOEConfiguration(bitOffset):
+def generateHTMLForOEConfiguration(bitOffset, selectionBitCount=4):
     html = """
 <h2>Selection of output enable signals</h2>
-This section has 22 bytes(?).
 
-Every I/O pin can be configured as output and select one of six signals as output enable signal (tri-state control signal).
+Every I/O pin can select one of six global signals as output enable signal (tri-state control signal).<br/>
+<br/>
 The output enable signals are usually active high: When the signal of is low, the pin is in high-impedance state.
 When it is high, the pin assumes the logic level defined by the output of the corresponding macrocell.
-It is also possible to use an inverted output enable signal and thus realize active-low output enable function.
-
+It is also possible to use an inverted output enable signal and thus realize active-low output enable function.<br/>
+<br/>
 A total of 6 global output enable signals are available,
 which somehow can be chosen from PIA signals,
 probably similar to the way signals are routed to a LAB:
 One bit selects one PIA signal as OE signal. A '1' bit indicates a disregarded signal, a '0' bit selects a PIA signal as output enable signal.
 Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>
-"""
+<br/>
+It appears, that {:d} bits select, which PIA signal is used as global output enable signal.
+A {:d}th bit indicates, whether the signal is used non-inverted or inverted.
+""".format(selectionBitCount, selectionBitCount+1)
 
     tr = """<tr>
 <td colspan=3>Unknown function</td>
