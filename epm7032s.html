@@ -1,31 +1,42 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="common.css"/>
+<link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 <body>
-<h1>Altera EPM7032S CPLD bitstream format</h1>
+<div id="content">
+<h1>The Altera EPM7032S CPLD bitstream format</h1>
 
-On this page an attempt is made to document the bitstream format necessary to program the above programmable logic device.
-The presented information is obtained through reverse-engineering,
-which -sadly- is necessary since the vendor does not provide specification documents about the composition of a valid bitstream,
-which would be required for implementation of third-party software.
-At some point, hopefully, the information presented here
-will be sufficient to allow implementation of an Open Source bitstream writer for this device in the context of <a href="https://symbiflow.github.io/">SymbiFlow</a>.
+<h2>Introduction</h2>
+
+This page is an inofficial documentation for Altera's EPM7032S CPLD bitstream format.
+It is presented here in the hope that at some point
+the information here may be sufficient to allow implementation of third-party software
+to support this programmable logic device,
+namely in the context of <a href="https://symbiflow.github.io/">SymbiFlow</a>.
 <br/><br/>
 This is an automatically generated page.
 The corresponding generator can be found <a href="https://github.com/programmable-logic-tools/altera-max7000-db">here</a>.
-The raw bitstream might have to be extracted from an Altera Quartus POF file first.
-<a href="https://github.com/programmable-logic-tools/libalterapof/tree/master/doc">libalterpof</a> may help with that.
 <br/><br/>
-Keep in mind that as this is a third-party specification.
-It might never be accurate or complete.
-There usually is no technical measure in a programmable logic device preventing you from loading a flawed bitstream
-and if you do so, there is a good chance that you permanently damage your device.
-Use the information on this page at your own risk.
+The official way to generate bitstreams for this device is to use Altera Quartus-II.
+Quartus-II produces POF files as output, which contain the raw bitstream alongside some metadata,
+and <a href="https://en.wikipedia.org/wiki/Serial_Vector_Format">SVF</a> files for JTAG programming.
+For software tools handling POF files, see <a href="https://github.com/programmable-logic-tools/libalterapof/tree/master/doc">libalterpof</a>.
 <br/><br/>
-The bitstream for the <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">EPM7032S</a> consists of 15033 bits in total.<br/>
+The official device family datasheet can be found <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">here</a>. 
+
+<h2>Disclaimer</h2>
+
+Keep in mind that this is a third-party specification.
+Therefore it may be incorrect, inaccurate or incomplete.
+There may be no technical measure present in your device preventing you from loading a flawed bitstream.
+If you use the information on this page to program your device, you may permanently damage or destroy your hardware.
+The authors expressly disclaim any liability for damages arising from any kind of usage of this document.
+<br/>
 
 <h2>Bitstream overview</h2>
+
+The bitstream for the EPM7032S consists of 15033 bits in total.<br/>
+
 <table>
 <tr>
 <th></th>
@@ -153,25 +164,28 @@ It seems, the macrocell configuration bits appear in the following order in the 
 <li>CLKS: Select the macrocell's flip-flop clock source: If CLKS is 0, then a global clock is used. If CLKS is 1, then the macrocell's product term 4 result is used.</li>
 </ul>
 <h2>Selection of global signals for a LAB (PIA-to-LAB routing)</h2>
-Every LAB can use 36 global signals by routing them to the LAB from the PIA.<br/>
-A global signal is selected by enabling the corresponding switch/multiplexer: One bit switches one signal. A '1' bit disables a PIA signal, a '0' bit enables it.<br/>
-Caveat: Enabling multiple switches for one LAB signal may damage the device.<br/>
-Every LAB signal can be selected from 2 choices. With one bit per choice this makes for 72 bits per LAB and 144 bits (18 bytes) in total for PIA to LAB routing configuration.<br/>
-Assuming that every switch/multiplexer selects a different PIA signal, a maximum of 72 PIA signals is routable to one LAB.<br/>
+Every LAB can use 36 global signals by routing them to the LAB from the PIA.
+A global signal is selected by enabling the corresponding switch/multiplexer: One bit switches one signal. A '1' bit disables a PIA signal, a '0' bit enables it.
+Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>
+Every LAB signal can be selected from 4 choices. With one bit per choice this makes for 144 bits per LAB and 288 bits (36 bytes) in total for PIA to LAB routing configuration.
+Assuming that every switch/multiplexer selects a different PIA signal, a maximum of 144 PIA signals is routable to one LAB.<br/>
 
 <h2>Selection of output enable signals</h2>
-This section has 22 bytes(?).
 
-Every I/O pin can be configured as output and select one of six signals as output enable signal (tri-state control signal).
+Every I/O pin can select one of six global signals as output enable signal (tri-state control signal).<br/>
+<br/>
 The output enable signals are usually active high: When the signal of is low, the pin is in high-impedance state.
 When it is high, the pin assumes the logic level defined by the output of the corresponding macrocell.
-It is also possible to use an inverted output enable signal and thus realize active-low output enable function.
-
+It is also possible to use an inverted output enable signal and thus realize active-low output enable function.<br/>
+<br/>
 A total of 6 global output enable signals are available,
 which somehow can be chosen from PIA signals,
 probably similar to the way signals are routed to a LAB:
 One bit selects one PIA signal as OE signal. A '1' bit indicates a disregarded signal, a '0' bit selects a PIA signal as output enable signal.
 Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>
+<br/>
+It appears, that 4 bits select, which PIA signal is used as global output enable signal.
+A 5th bit indicates, whether the signal is used non-inverted or inverted.
 
 <h2>I/O configuration</h2>
 
@@ -14721,8 +14735,8 @@ The yet unidentified bits of the bitstream are expected to configure:
 <tr><td>LAB B</td><td colspan=2>Macrocell 30</td><td colspan=13>M</td></tr>
 <tr><td>LAB B</td><td colspan=2>Macrocell 31</td><td colspan=13>M</td></tr>
 <tr><td>LAB B</td><td colspan=2>Macrocell 32</td><td colspan=13>M</td></tr>
-<tr><td>LAB A</td><td colspan=2>PIA-Mux 1-36</td><td colspan="2" title="Bits 14496-14497">P</td><td colspan="2" title="Bits 14498-14499">P</td><td colspan="2" title="Bits 14500-14501">P</td><td colspan="2" title="Bits 14502-14503">P</td><td colspan="2" title="Bits 14504-14505">P</td><td colspan="2" title="Bits 14506-14507">P</td><td colspan="2" title="Bits 14508-14509">P</td><td colspan="2" title="Bits 14510-14511">P</td><td colspan="2" title="Bits 14512-14513">P</td><td colspan="2" title="Bits 14514-14515">P</td><td colspan="2" title="Bits 14516-14517">P</td><td colspan="2" title="Bits 14518-14519">P</td><td colspan="2" title="Bits 14520-14521">P</td><td colspan="2" title="Bits 14522-14523">P</td><td colspan="2" title="Bits 14524-14525">P</td><td colspan="2" title="Bits 14526-14527">P</td><td colspan="2" title="Bits 14528-14529">P</td><td colspan="2" title="Bits 14530-14531">P</td><td colspan="2" title="Bits 14532-14533">P</td><td colspan="2" title="Bits 14534-14535">P</td><td colspan="2" title="Bits 14536-14537">P</td><td colspan="2" title="Bits 14538-14539">P</td><td colspan="2" title="Bits 14540-14541">P</td><td colspan="2" title="Bits 14542-14543">P</td><td colspan="2" title="Bits 14544-14545">P</td><td colspan="2" title="Bits 14546-14547">P</td><td colspan="2" title="Bits 14548-14549">P</td><td colspan="2" title="Bits 14550-14551">P</td><td colspan="2" title="Bits 14552-14553">P</td><td colspan="2" title="Bits 14554-14555">P</td><td colspan="2" title="Bits 14556-14557">P</td><td colspan="2" title="Bits 14558-14559">P</td><td colspan="2" title="Bits 14560-14561">P</td><td colspan="2" title="Bits 14562-14563">P</td><td colspan="2" title="Bits 14564-14565">P</td><td colspan="2" title="Bits 14566-14567">P</td></tr>
-<tr><td>LAB B</td><td colspan=2>PIA-Mux 37-72</td><td colspan="2" title="Bits 14568-14569">P</td><td colspan="2" title="Bits 14570-14571">P</td><td colspan="2" title="Bits 14572-14573">P</td><td colspan="2" title="Bits 14574-14575">P</td><td colspan="2" title="Bits 14576-14577">P</td><td colspan="2" title="Bits 14578-14579">P</td><td colspan="2" title="Bits 14580-14581">P</td><td colspan="2" title="Bits 14582-14583">P</td><td colspan="2" title="Bits 14584-14585">P</td><td colspan="2" title="Bits 14586-14587">P</td><td colspan="2" title="Bits 14588-14589">P</td><td colspan="2" title="Bits 14590-14591">P</td><td colspan="2" title="Bits 14592-14593">P</td><td colspan="2" title="Bits 14594-14595">P</td><td colspan="2" title="Bits 14596-14597">P</td><td colspan="2" title="Bits 14598-14599">P</td><td colspan="2" title="Bits 14600-14601">P</td><td colspan="2" title="Bits 14602-14603">P</td><td colspan="2" title="Bits 14604-14605">P</td><td colspan="2" title="Bits 14606-14607">P</td><td colspan="2" title="Bits 14608-14609">P</td><td colspan="2" title="Bits 14610-14611">P</td><td colspan="2" title="Bits 14612-14613">P</td><td colspan="2" title="Bits 14614-14615">P</td><td colspan="2" title="Bits 14616-14617">P</td><td colspan="2" title="Bits 14618-14619">P</td><td colspan="2" title="Bits 14620-14621">P</td><td colspan="2" title="Bits 14622-14623">P</td><td colspan="2" title="Bits 14624-14625">P</td><td colspan="2" title="Bits 14626-14627">P</td><td colspan="2" title="Bits 14628-14629">P</td><td colspan="2" title="Bits 14630-14631">P</td><td colspan="2" title="Bits 14632-14633">P</td><td colspan="2" title="Bits 14634-14635">P</td><td colspan="2" title="Bits 14636-14637">P</td><td colspan="2" title="Bits 14638-14639">P</td></tr>
+<tr><td>LAB A</td><td colspan=2>PIA-Mux 1-36</td><td colspan="4" title="Bits 14496-14499">P</td><td colspan="4" title="Bits 14500-14503">P</td><td colspan="4" title="Bits 14504-14507">P</td><td colspan="4" title="Bits 14508-14511">P</td><td colspan="4" title="Bits 14512-14515">P</td><td colspan="4" title="Bits 14516-14519">P</td><td colspan="4" title="Bits 14520-14523">P</td><td colspan="4" title="Bits 14524-14527">P</td><td colspan="4" title="Bits 14528-14531">P</td><td colspan="4" title="Bits 14532-14535">P</td><td colspan="4" title="Bits 14536-14539">P</td><td colspan="4" title="Bits 14540-14543">P</td><td colspan="4" title="Bits 14544-14547">P</td><td colspan="4" title="Bits 14548-14551">P</td><td colspan="4" title="Bits 14552-14555">P</td><td colspan="4" title="Bits 14556-14559">P</td><td colspan="4" title="Bits 14560-14563">P</td><td colspan="4" title="Bits 14564-14567">P</td><td colspan="4" title="Bits 14568-14571">P</td><td colspan="4" title="Bits 14572-14575">P</td><td colspan="4" title="Bits 14576-14579">P</td><td colspan="4" title="Bits 14580-14583">P</td><td colspan="4" title="Bits 14584-14587">P</td><td colspan="4" title="Bits 14588-14591">P</td><td colspan="4" title="Bits 14592-14595">P</td><td colspan="4" title="Bits 14596-14599">P</td><td colspan="4" title="Bits 14600-14603">P</td><td colspan="4" title="Bits 14604-14607">P</td><td colspan="4" title="Bits 14608-14611">P</td><td colspan="4" title="Bits 14612-14615">P</td><td colspan="4" title="Bits 14616-14619">P</td><td colspan="4" title="Bits 14620-14623">P</td><td colspan="4" title="Bits 14624-14627">P</td><td colspan="4" title="Bits 14628-14631">P</td><td colspan="4" title="Bits 14632-14635">P</td><td colspan="4" title="Bits 14636-14639">P</td></tr>
+<tr><td>LAB B</td><td colspan=2>PIA-Mux 37-72</td><td colspan="4" title="Bits 14640-14643">P</td><td colspan="4" title="Bits 14644-14647">P</td><td colspan="4" title="Bits 14648-14651">P</td><td colspan="4" title="Bits 14652-14655">P</td><td colspan="4" title="Bits 14656-14659">P</td><td colspan="4" title="Bits 14660-14663">P</td><td colspan="4" title="Bits 14664-14667">P</td><td colspan="4" title="Bits 14668-14671">P</td><td colspan="4" title="Bits 14672-14675">P</td><td colspan="4" title="Bits 14676-14679">P</td><td colspan="4" title="Bits 14680-14683">P</td><td colspan="4" title="Bits 14684-14687">P</td><td colspan="4" title="Bits 14688-14691">P</td><td colspan="4" title="Bits 14692-14695">P</td><td colspan="4" title="Bits 14696-14699">P</td><td colspan="4" title="Bits 14700-14703">P</td><td colspan="4" title="Bits 14704-14707">P</td><td colspan="4" title="Bits 14708-14711">P</td><td colspan="4" title="Bits 14712-14715">P</td><td colspan="4" title="Bits 14716-14719">P</td><td colspan="4" title="Bits 14720-14723">P</td><td colspan="4" title="Bits 14724-14727">P</td><td colspan="4" title="Bits 14728-14731">P</td><td colspan="4" title="Bits 14732-14735">P</td><td colspan="4" title="Bits 14736-14739">P</td><td colspan="4" title="Bits 14740-14743">P</td><td colspan="4" title="Bits 14744-14747">P</td><td colspan="4" title="Bits 14748-14751">P</td><td colspan="4" title="Bits 14752-14755">P</td><td colspan="4" title="Bits 14756-14759">P</td><td colspan="4" title="Bits 14760-14763">P</td><td colspan="4" title="Bits 14764-14767">P</td><td colspan="4" title="Bits 14768-14771">P</td><td colspan="4" title="Bits 14772-14775">P</td><td colspan="4" title="Bits 14776-14779">P</td><td colspan="4" title="Bits 14780-14783">P</td></tr>
 <tr>
 <td colspan=3>Unknown function</td>
 <td>?</td>
@@ -14747,41 +14761,42 @@ The yet unidentified bits of the bitstream are expected to configure:
 <td>?</td>
 <td>?</td>
 <td>?</td>
-</tr><tr><td colspan=3>I/O block 1</td><td colspan=6 title="Bits 14816-14821">IO</td></tr>
-<tr><td colspan=3>I/O block 2</td><td colspan=6 title="Bits 14822-14827">IO</td></tr>
-<tr><td colspan=3>I/O block 3</td><td colspan=6 title="Bits 14828-14833">IO</td></tr>
-<tr><td colspan=3>I/O block 4</td><td colspan=6 title="Bits 14834-14839">IO</td></tr>
-<tr><td colspan=3>I/O block 5</td><td colspan=6 title="Bits 14840-14845">IO</td></tr>
-<tr><td colspan=3>I/O block 6</td><td colspan=6 title="Bits 14846-14851">IO</td></tr>
-<tr><td colspan=3>I/O block 7</td><td colspan=6 title="Bits 14852-14857">IO</td></tr>
-<tr><td colspan=3>I/O block 8</td><td colspan=6 title="Bits 14858-14863">IO</td></tr>
-<tr><td colspan=3>I/O block 9</td><td colspan=6 title="Bits 14864-14869">IO</td></tr>
-<tr><td colspan=3>I/O block 10</td><td colspan=6 title="Bits 14870-14875">IO</td></tr>
-<tr><td colspan=3>I/O block 11</td><td colspan=6 title="Bits 14876-14881">IO</td></tr>
-<tr><td colspan=3>I/O block 12</td><td colspan=6 title="Bits 14882-14887">IO</td></tr>
-<tr><td colspan=3>I/O block 13</td><td colspan=6 title="Bits 14888-14893">IO</td></tr>
-<tr><td colspan=3>I/O block 14</td><td colspan=6 title="Bits 14894-14899">IO</td></tr>
-<tr><td colspan=3>I/O block 15</td><td colspan=6 title="Bits 14900-14905">IO</td></tr>
-<tr><td colspan=3>I/O block 16</td><td colspan=6 title="Bits 14906-14911">IO</td></tr>
-<tr><td colspan=3>I/O block 17</td><td colspan=6 title="Bits 14912-14917">IO</td></tr>
-<tr><td colspan=3>I/O block 18</td><td colspan=6 title="Bits 14918-14923">IO</td></tr>
-<tr><td colspan=3>I/O block 19</td><td colspan=6 title="Bits 14924-14929">IO</td></tr>
-<tr><td colspan=3>I/O block 20</td><td colspan=6 title="Bits 14930-14935">IO</td></tr>
-<tr><td colspan=3>I/O block 21</td><td colspan=6 title="Bits 14936-14941">IO</td></tr>
-<tr><td colspan=3>I/O block 22</td><td colspan=6 title="Bits 14942-14947">IO</td></tr>
-<tr><td colspan=3>I/O block 23</td><td colspan=6 title="Bits 14948-14953">IO</td></tr>
-<tr><td colspan=3>I/O block 24</td><td colspan=6 title="Bits 14954-14959">IO</td></tr>
-<tr><td colspan=3>I/O block 25</td><td colspan=6 title="Bits 14960-14965">IO</td></tr>
-<tr><td colspan=3>I/O block 26</td><td colspan=6 title="Bits 14966-14971">IO</td></tr>
-<tr><td colspan=3>I/O block 27</td><td colspan=6 title="Bits 14972-14977">IO</td></tr>
-<tr><td colspan=3>I/O block 28</td><td colspan=6 title="Bits 14978-14983">IO</td></tr>
-<tr><td colspan=3>I/O block 29</td><td colspan=6 title="Bits 14984-14989">IO</td></tr>
-<tr><td colspan=3>I/O block 30</td><td colspan=6 title="Bits 14990-14995">IO</td></tr>
-<tr><td colspan=3>I/O block 31</td><td colspan=6 title="Bits 14996-15001">IO</td></tr>
-<tr><td colspan=3>I/O block 32</td><td colspan=6 title="Bits 15002-15007">IO</td></tr>
-<tr><td colspan=3>Extra bits</td><td title="15188">?</td><td title="15189">?</td><td title="15190">?</td><td title="15191">?</td><td title="15192">?</td><td title="15193">?</td><td title="15194">?</td><td title="15195">?</td><td title="15196">?</td></tr>
-<tr><td colspan=3>Usercode</td><td colspan=16 title="Bits 15213-15197">Bits 16-1</td></tr>
+</tr><tr><td colspan=3>I/O block 1</td><td colspan=6 title="Bits 14960-14965">IO</td></tr>
+<tr><td colspan=3>I/O block 2</td><td colspan=6 title="Bits 14966-14971">IO</td></tr>
+<tr><td colspan=3>I/O block 3</td><td colspan=6 title="Bits 14972-14977">IO</td></tr>
+<tr><td colspan=3>I/O block 4</td><td colspan=6 title="Bits 14978-14983">IO</td></tr>
+<tr><td colspan=3>I/O block 5</td><td colspan=6 title="Bits 14984-14989">IO</td></tr>
+<tr><td colspan=3>I/O block 6</td><td colspan=6 title="Bits 14990-14995">IO</td></tr>
+<tr><td colspan=3>I/O block 7</td><td colspan=6 title="Bits 14996-15001">IO</td></tr>
+<tr><td colspan=3>I/O block 8</td><td colspan=6 title="Bits 15002-15007">IO</td></tr>
+<tr><td colspan=3>I/O block 9</td><td colspan=6 title="Bits 15008-15013">IO</td></tr>
+<tr><td colspan=3>I/O block 10</td><td colspan=6 title="Bits 15014-15019">IO</td></tr>
+<tr><td colspan=3>I/O block 11</td><td colspan=6 title="Bits 15020-15025">IO</td></tr>
+<tr><td colspan=3>I/O block 12</td><td colspan=6 title="Bits 15026-15031">IO</td></tr>
+<tr><td colspan=3>I/O block 13</td><td colspan=6 title="Bits 15032-15037">IO</td></tr>
+<tr><td colspan=3>I/O block 14</td><td colspan=6 title="Bits 15038-15043">IO</td></tr>
+<tr><td colspan=3>I/O block 15</td><td colspan=6 title="Bits 15044-15049">IO</td></tr>
+<tr><td colspan=3>I/O block 16</td><td colspan=6 title="Bits 15050-15055">IO</td></tr>
+<tr><td colspan=3>I/O block 17</td><td colspan=6 title="Bits 15056-15061">IO</td></tr>
+<tr><td colspan=3>I/O block 18</td><td colspan=6 title="Bits 15062-15067">IO</td></tr>
+<tr><td colspan=3>I/O block 19</td><td colspan=6 title="Bits 15068-15073">IO</td></tr>
+<tr><td colspan=3>I/O block 20</td><td colspan=6 title="Bits 15074-15079">IO</td></tr>
+<tr><td colspan=3>I/O block 21</td><td colspan=6 title="Bits 15080-15085">IO</td></tr>
+<tr><td colspan=3>I/O block 22</td><td colspan=6 title="Bits 15086-15091">IO</td></tr>
+<tr><td colspan=3>I/O block 23</td><td colspan=6 title="Bits 15092-15097">IO</td></tr>
+<tr><td colspan=3>I/O block 24</td><td colspan=6 title="Bits 15098-15103">IO</td></tr>
+<tr><td colspan=3>I/O block 25</td><td colspan=6 title="Bits 15104-15109">IO</td></tr>
+<tr><td colspan=3>I/O block 26</td><td colspan=6 title="Bits 15110-15115">IO</td></tr>
+<tr><td colspan=3>I/O block 27</td><td colspan=6 title="Bits 15116-15121">IO</td></tr>
+<tr><td colspan=3>I/O block 28</td><td colspan=6 title="Bits 15122-15127">IO</td></tr>
+<tr><td colspan=3>I/O block 29</td><td colspan=6 title="Bits 15128-15133">IO</td></tr>
+<tr><td colspan=3>I/O block 30</td><td colspan=6 title="Bits 15134-15139">IO</td></tr>
+<tr><td colspan=3>I/O block 31</td><td colspan=6 title="Bits 15140-15145">IO</td></tr>
+<tr><td colspan=3>I/O block 32</td><td colspan=6 title="Bits 15146-15151">IO</td></tr>
+<tr><td colspan=3>Extra bits</td><td title="15332">?</td><td title="15333">?</td><td title="15334">?</td><td title="15335">?</td><td title="15336">?</td><td title="15337">?</td><td title="15338">?</td><td title="15339">?</td><td title="15340">?</td></tr>
+<tr><td colspan=3>Usercode</td><td colspan=16 title="Bits 15357-15341">Bits 16-1</td></tr>
 
 </table>
+</div>
 </body>
 </html>
