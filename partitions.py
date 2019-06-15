@@ -3,9 +3,12 @@
 #
 # Creates a HTML table for the provided array of bitstream partitions
 #
-def partitionsToTable(partitions):
+def partitionsToTable(partitions, deviceName, bitCount):
     chapterPartitioning = """
 <h2>Bitstream overview</h2>
+
+The bitstream for the {:s} consists of {:d} bits in total.<br/>
+
 <table>
 <tr>
 <th></th>
@@ -15,7 +18,7 @@ def partitionsToTable(partitions):
 <th>Bit count</th>
 <th>Composed of</th>
 </tr>
-"""
+""".format(deviceName, bitCount)
     
     startBit = 1
     

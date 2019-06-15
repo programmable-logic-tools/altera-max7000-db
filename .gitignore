@@ -1,6 +1,6 @@
 
-*.htm
-*.html
+epm*.html
+
 *.yaml
 
 *.pyc

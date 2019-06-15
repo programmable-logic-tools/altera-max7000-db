@@ -9,6 +9,7 @@ import sys
 from common import *
 from partitions import *
 
+deviceName = "EPM7032S"
 LABCount = 2
 # Number of PIA-to-LAB muxes per LAB signal
 PIAtoLABmuxCount = 4
@@ -16,39 +17,7 @@ IOCount = 32
 bitCount = 15033
 
 
-page = """<html>
-<head>
-<link rel="stylesheet" type="text/css" href="common.css"/>
-</head>
-<body>
-<div id="content">
-<h1>The Altera EPM7032S CPLD bitstream format</h1>
-
-<h2>Introduction</h2>
-
-On this page an attempt is made to document the bitstream format necessary to program the above programmable logic device.
-The presented information is obtained through reverse-engineering,
-which -sadly- is necessary since the vendor does not provide specification documents about the composition of a valid bitstream,
-which would be required for implementation of third-party software.
-At some point, hopefully, the information presented here
-will be sufficient to allow implementation of an Open Source bitstream writer for this device in the context of <a href="https://symbiflow.github.io/">SymbiFlow</a>.
-<br/><br/>
-This is an automatically generated page.
-The corresponding generator can be found <a href="https://github.com/programmable-logic-tools/altera-max7000-db">here</a>.
-The raw bitstream might have to be extracted from an Altera Quartus POF file first.
-<a href="https://github.com/programmable-logic-tools/libalterapof/tree/master/doc">libalterpof</a> may help with that.
-<br/><br/>
-The bitstream for the EPM7032S consists of """+str(bitCount)+""" bits in total.<br/>
-The official device family datasheet can be found <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">here</a>. 
-
-<h2>Disclaimer</h2>
-
-Keep in mind that as this is a third-party specification, it might never be accurate or complete.
-There usually is no technical measure in a programmable logic device preventing you from loading a flawed bitstream
-and if you do so, there is a good chance that you permanently damage your device.
-Use the information on this page at your own risk.
-<br/>
-"""
+page = open("intro.html", "r").read().format(deviceName, deviceName)
 
 
 partitions = [
@@ -87,7 +56,7 @@ partitions = [
     }
     ]
 
-page += partitionsToTable(partitions)
+page += partitionsToTable(partitions, deviceName, bitCount)
 
 
 #
