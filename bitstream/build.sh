@@ -4,7 +4,7 @@
 set -e
 
 # Where to store the generated HTML
-TARGET_FOLDER="../altera-max7000-db.gh-pages"
+TARGET_FOLDER="../../altera-max7000-db.gh-pages"
 
 # Clear the target folder
 here=$(pwd)
