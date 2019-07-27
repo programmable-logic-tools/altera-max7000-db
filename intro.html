@@ -8,27 +8,28 @@
 
 <h2>Introduction</h2>
 
-This page is an inofficial documentation for Altera's {:s} CPLD bitstream format.
-It is presented here in the hope that at some point
-the information here may be sufficient to allow implementation of third-party software
-to support this programmable logic device,
-namely in the context of <a href="https://symbiflow.github.io/">SymbiFlow</a>.
-<br/><br/>
-This is an automatically generated page.
-The corresponding generator can be found <a href="https://github.com/programmable-logic-tools/altera-max7000-db">here</a>.
-<br/><br/>
-The official way to generate bitstreams for this device is to use Altera Quartus-II.
-Quartus-II produces POF files as output, which contain the raw bitstream alongside some metadata,
-and <a href="https://en.wikipedia.org/wiki/Serial_Vector_Format">SVF</a> files for JTAG programming.
-For software tools handling POF files, see <a href="https://github.com/programmable-logic-tools/libalterapof/tree/master/doc">libalterpof</a>.
-<br/><br/>
+This is an inofficial, third-party documentation for the bitstream format of Altera's {:s} Complex Programmable Logic Device (CPLD).
+Intended audience are programmers experienced with Verilog, C and C++.
 The official device family datasheet can be found <a href="https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/ds/archives/m7000.pdf">here</a>. 
 
-<h2>Disclaimer</h2>
+<h3>Document generator</h3>
+This is an automatically generated page.
+The corresponding generator can be found <a href="https://github.com/programmable-logic-tools/altera-max7000-db">here</a>.
+
+<h3>Reference software</h3>
+The official way to generate bitstreams for this device is to use the bitstream writer of Altera Quartus-II.
+That bitstream writer imports a mapped and place-and-routed design and generates a POF file as output.
+A POF file contains the raw bitstream alongside some metadata.
+Furthermore, Quartus-II can produce a <a href="https://en.wikipedia.org/wiki/Serial_Vector_Format">Serial Vector Format</a> file (SVF) from a raw bitstream.
+Such a file contains a sequence of JTAG transactions,
+that when played back via a JTAG adapter such as Busblaster
+programs the flash memory of the connected CPLD with the corresponding bitstream.
+
+<h3>Disclaimer</h3>
 
 Keep in mind that this is a third-party specification.
 Therefore it may be incorrect, inaccurate or incomplete.
 There may be no technical measure present in your device preventing you from loading a flawed bitstream.
 If you use the information on this page to program your device, you may permanently damage or destroy your hardware.
 The authors expressly disclaim any liability for damages arising from any kind of usage of this document.
-<br/>
+
