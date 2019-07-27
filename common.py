@@ -141,12 +141,12 @@ It seems, the macrocell configuration bits appear in the following order in the 
 def generateHTMLForPIAtoLABrouting(LABCount, PIAtoLABmuxCount, bitOffset):
 
     html = "<h2>Selection of global signals for a LAB (PIA-to-LAB routing)</h2>\n"
-    html += "Every LAB can use "+str(GlobalSignalsPerLAB)+" global signals by routing them to the LAB from the PIA.<br/>\n"
-    html += "A global signal is selected by enabling the corresponding switch/multiplexer: One bit switches one signal. A '1' bit disables a PIA signal, a '0' bit enables it.<br/>\n"
-    html += "Caveat: Enabling multiple switches for one LAB signal may damage the device.<br/>\n"
+    html += "Every LAB can use "+str(GlobalSignalsPerLAB)+" global signals by routing them to the LAB from the PIA.\n"
+    html += "A global signal is selected by enabling the corresponding switch/multiplexer: One bit switches one signal. A '1' bit disables a PIA signal, a '0' bit enables it.\n"
+    html += "Caveat: Enabling multiple switches for one LAB signal may permanently damage the device.<br/>\n"
     bitCount = LABCount * GlobalSignalsPerLAB * PIAtoLABmuxCount
     byteCount = int(bitCount/8)
-    html += "Every LAB signal can be selected from "+str(PIAtoLABmuxCount)+" choices. With one bit per choice this makes for "+str(GlobalSignalsPerLAB*PIAtoLABmuxCount)+" bits per LAB and "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for PIA to LAB routing configuration.<br/>\n"
+    html += "Every LAB signal can be selected from "+str(PIAtoLABmuxCount)+" choices. With one bit per choice this makes for "+str(GlobalSignalsPerLAB*PIAtoLABmuxCount)+" bits per LAB and "+str(bitCount)+" bits ("+str(byteCount)+" bytes) in total for PIA to LAB routing configuration.\n"
     html += "Assuming that every switch/multiplexer selects a different PIA signal, a maximum of {:d} PIA signals is routable to one LAB.<br/>\n".format(GlobalSignalsPerLAB*PIAtoLABmuxCount)
 
     tr = ""
