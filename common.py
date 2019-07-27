@@ -12,7 +12,7 @@ def generateHTMLForProductTerms(LABCount, bitOffset=0):
     template = """
 <h2>Product terms</h2>
 The device contains {:d} Logic Array Blocks (LABs), each containing 16 macrocells.
-Every macrocell can use between 0 and 5 product terms to calculate a sum-of-products.
+Every macrocell can use between 0 and 5 product terms (PT) to calculate a sum-of-products.
 Each of those product terms can use up to {:d} different input signals choosable from {:d} nets to calculate a product.
 To enable the inclusion of a net into a product term, the corresponding bit in the bitstream must be toggled:
 A '1' represents a disregarded signal, a '0' appends the signal to the product.
@@ -74,21 +74,48 @@ def generateHTMLForMacrocellConfiguration(LABCount, bitOffset):
     template = """
 <h2>Macrocell configuration</h2>
 
-In this context by macrocell configuration it is referred to everything configurable
-between product terms and macrocell input/output signal.
+In this document the term macrocell refers to all logical building blocks
+between the logical inputs signals and the combinatorial or sequential output signal.
+I.e. this includes the configuration of the sum-of-product's (SOP) AND matrix, the OR gate and the D-flip flop (D-FF) or latch.
+It appears, {:d} bits configure one macrocell.
+With {:d} LABs this makes for {:d} bits ({:d} bytes) in total for macrocell configuration.
 
-The macrocell bits are expected to configure:
+<h3>Expected configuration bits</h3>
+
+Macrocell configuration bits are expected to exist for the following functions:
 <ul>
-<li>Select product terms: Probably five bits, one per product term</li>
-<li>Select logic type: Combinatorial (latch) or flip-flop (at least one bit)</li>
+<li>Selection of product terms</li>
+<li>Selection of logic type: Combinatorial (latch) or flip-flop (at least one bit)</li>
 <li>Select D-FF clock signal: GCLK1 or GCLK2 or a product term (at least two bits)</li>
 <li>Select D-FF enable signal: None or OE1 or OE2 or product term? (two bits?)</li>
 <li>Select D-FF clear signal: None or GCLR or product term (two bits?)</li>
+<li>Select D-FF preset signal: None or GCLR(?) or product term (two bits?)</li>
 <li>Enable parallel expander input (one bit?)</li>
+<li>Serial expander?</li>
 </ul>
 
-It appears, {:d} bits configure one macrocell.
-With {:d} LABs this makes for {:d} bits ({:d} bytes) in total for macrocell configuration.
+<h3>Selection of product terms</h3>
+
+A SOP's OR gate has five inputs from the AND matrix in this device.
+Each of them can individually be turned on or off,
+determining whether the respective OR gate input is enabled or not.
+The five associated configuration bits are named
+<b>nOR<i>x</i>E</b>, OR gate input <i>x</i> enable, with <i>x</i> &isin; [1;5].
+
+When nORxE is 0, the signal on OR gate input <i>x</i> is controlled by the result of the connected PT.
+When nORxE is 1, the signal on OR gate input <i>x</i> is tied to 1 (true) regardless of the result of the connected PT.
+
+<h3>Clock selection</h3>
+
+The D-FF has one clock input pin on this device.
+That clock can be driven from different sources:
+by one of the global clock input pins or, alternatively, by an arbitrary signal from within the design.
+This choice is determined by one configuration bit named <b>CLKS</b>, clock select.
+
+When CLKS is 0, one of the global clocks is used to clock the D-FF.
+When CLKS is 1, the result of PT4 is used to clock the D-FF.
+
+Note: When PT4 is used as clock signal, it shouldn't be used for combinatorial logic i.e. as OR gate input.
 
 <h3>Preliminary configuration bit order</h3>
 
@@ -96,27 +123,20 @@ It seems, the macrocell configuration bits appear in the following order in the 
 <table>
 <tbody>
 <tr>
-<td title="Bit 1: Enable PT1 to OR switch">PT1E</td>
-<td title="Bit 2: Enable PT2 to OR switch">PT2E</td>
-<td title="Bit 3: Enable PT3 to OR switch">PT3E</td>
-<td title="Bit 4: Enable PT4 to OR switch">PT4E</td>
-<td title="Bit 5: Enable PT5 to OR switch">PT5E</td>
-<td title="Bit 6: Enable global clock usage">GCLKE</td>
-<td title="Bit 7: Enable global clear usage">GCLRE</td>
+<td title="Bit 1: Enable PT1 to OR switch">nOR1E</td>
+<td title="Bit 2: Enable PT2 to OR switch">nOR2E</td>
+<td title="Bit 3: Enable PT3 to OR switch">nOR3E</td>
+<td title="Bit 4: Enable PT4 to OR switch">nOR4E</td>
+<td title="Bit 5: Enable PT5 to OR switch">nOR5E</td>
+<td title="Bit 6: Clock select">CLKS</td>
+<td title="Bit 7: Clear select">CLRS</td>
 <td title="Bits 8-10: Unknown function" colspan=3>???</td>
-<td title="Bit 11: Select registered or latched output">RLS</td>
-<td title="Bit 13: Select global clock">GCLK</td>
+<td title="Bit 11: Select registered or latched output">DFFE</td>
+<td title="Bits 12: Unknown function">?</td>
+<td title="Bit 13: Select global clock">GCLKS</td>
 </tr>
 </tbody>
 </table>
-
-<ul>
-<li>PT1E: Enable inclusion of product term 1 in the sum</li>
-<li>PT2E: Enable inclusion of product term 2 in the sum</li>
-<li>PT3E: Enable inclusion of product term 3 in the sum</li>
-<li>PT4E: Enable inclusion of product term 4 in the sum</li>
-<li>PT5E: Enable inclusion of product term 5 in the sum</li>
-</ul>
 """
 
     html = template.format(
