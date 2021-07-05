@@ -20,21 +20,25 @@ class Grid:
     def setTile(self, x, y, tile):
         self.tiles[x][y] = tile
 
-    def html(self, html=True, body=True):
+    def html(self, html=True, css=True, body=True):
         result = ""
         if html:
             result += "<html>\n"
+        if css:
+            result += """<head>
+<link rel="stylesheet" type="text/css" href="style.css"/>
+</head>"""
         if body:
             result += "<body>\n"
-        result += "<table class=\"tile-grid\">\n"
+        result += "<table class=tile-grid>\n"
         for y in range(self.sizey):
             result += "<tr>\n"
             for x in range(self.sizex):
                 tile = self.getTile(x, y)
                 if tile == None:
-                    result += "<td></td>\n"
+                    result += "<td class=empty></td>\n"
                     continue
-                result += "<td rowspan=\"{:d}\">{:s}</td>\n".format(tile.rowspan, tile.type)
+                result += "<td class=tile rowspan=\"{:d}\">{:s}</td>\n".format(tile.rowspan, tile.type)
             result += "</tr>\n"
         result += "</table>\n"
         if body:

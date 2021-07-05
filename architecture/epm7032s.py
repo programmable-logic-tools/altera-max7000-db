@@ -23,7 +23,7 @@ class Grid_EPM7032S(Grid):
             self.setTile(6, y, MAX_IO())
 
         # Add global routing pool
-        self.setTile(3, 1, MAX_GRP(rowspan=16))
+        self.setTile(3, 1, MAX_PIA(rowspan=16))
 
         # Add dedicated input pins
         for x in [1, 2, 4, 5]:

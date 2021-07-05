@@ -1,0 +1,39 @@
+
+table.tile-grid
+{
+    font-size: 10pt;
+    border: 2px solid black;
+    text-align: center;
+}
+
+td
+{
+    border: 0px;
+}
+
+td.tile
+{
+    border: 1px solid black;
+    min-width: 15px;
+    padding: 20px;
+}
+
+td[colspan=2]
+{
+    min-width: 30px;
+}
+
+td[colspan=3]
+{
+    min-width: 45px;
+}
+
+td.binary
+{
+    font-family: fixed;
+}
+
+td.empty
+{
+    border: none;
+}

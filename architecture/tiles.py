@@ -27,12 +27,12 @@ class MAX_MCELL(Tile):
 class MAX_SEXP(Tile):
     def __init__(self):
         self.type = "MAX_SEXP"
-        self.comment = "Serial expander"
+        self.comment = "Shareable expander"
         self.rowspan = 1
 
-class MAX_GRP(Tile):
+class MAX_PIA(Tile):
     def __init__(self, rowspan=16):
-        self.type = "MAX_GRP"
-        self.comment = "Global routing pool"
+        self.type = "MAX_PIA"
+        self.comment = "Programmable interconnect array"
         self.rowspan = rowspan
 
