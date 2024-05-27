@@ -1,0 +1,50 @@
+[project]
+name = "max7000"
+authors = [
+  { name = "Matthias Bock", email = "mail@matthiasbock.net" }
+]
+description = "Library for working with Altera MAX7000 bitstreams"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+  "Programming Language :: Python :: 3.9",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Developers",
+  "Topic :: Utilities",
+]
+license = { file = "LICENSE" }
+dynamic = [
+  "version",
+  "dependencies"
+]
+
+[project.urls]
+"Homepage" = ""
+"Bug Tracker" = ""
+
+[build-system]
+# List of packages loaded during the package build process
+# For concrete versions, see build/requirements.txt.
+requires = [
+  "build",
+  "wheel",
+  "setuptools",
+  "setuptools-git-versioning"
+]
+build-backend = "setuptools.build_meta"
+
+[tools.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = [""]
+include = ["src", "src.*"]
+exclude = ["*_test.py"]
+namespaces = false
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools-git-versioning]
+enabled = true

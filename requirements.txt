@@ -1,0 +1,9 @@
+
+# Development
+autoflake
+
+# KSY files
+kaitaistruct
+
+# ImportError: cannot import name 'Self' from 'typing'
+typing-extensions>=4.8

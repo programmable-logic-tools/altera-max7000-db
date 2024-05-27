@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Stores the current state of the Python virtual environment
+# for better reproducibility lateron
+#
+
+set -e
+
+HERE="$(realpath .)"
+OUTFILE="$HERE/.venv.versions"
+
+DIR_VENV=$(grep -E ^DIR_VENV_USER Makefile | sed -E -e 's/\(shell|\)/ /g' | cut -d" " -f4)
+DIR_VENV=$(eval realpath $DIR_VENV)
+echo "Virtual environment: $DIR_VENV"
+
+if [ ! -e "$DIR_VENV" ]; then
+    # venv not created; nothing to do
+    exit 0;
+fi
+
+source "$DIR_VENV/bin/activate" && \
+pip3 freeze > "$OUTFILE"
+
+git add "$OUTFILE"
+
