@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Compiles static HTML for GitHub pages
+#
 
 # Stop on error
 set -e
