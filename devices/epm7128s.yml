@@ -1,0 +1,22 @@
+
+logic_array_blocks:
+    count: 8
+
+bitstream:
+    block_count: 5
+    block1:
+        byte_size: 12
+        function: 'unknown'
+    block2:
+        byte_size: 7040
+        function: 'product terms configuration'
+    block3:
+        byte_size:
+
+
+packages:
+    plcc-84:
+        pins:
+            count: 84
+            1: dedicated_input[2]
+            2: dedicated_input[1]

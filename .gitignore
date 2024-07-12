@@ -1,9 +1,10 @@
 
-# Temporary files / cache
+# Temporary / cache / backup files
 *~
 .*.swp
 *.odt
 .~lock.*
+*.bak
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

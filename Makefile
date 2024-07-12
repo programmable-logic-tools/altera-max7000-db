@@ -40,9 +40,15 @@ clean_python:
 	@rm -vfr .pytest_cache
 
 
+.PHONY: clean_verilog
+clean_verilog:
+	find verilog -maxdepth 6 -type f \( -name '*.v.bak' -o -name '*.vh.bak' \) -exec rm -vf {} \;
+
+
 # Remove all generated content
 .PHONY: clean
 clean:  clean_kaitai \
+		clean_verilog \
 		clean_venv \
 		clean_python \
 		clean_package \

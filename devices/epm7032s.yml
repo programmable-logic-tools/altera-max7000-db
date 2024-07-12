@@ -1,0 +1,8 @@
+
+lab_a:
+    macrocell1:
+        product_term1:
+            switch_non_inverted_global1
+            switch_inverted_global1
+
+    

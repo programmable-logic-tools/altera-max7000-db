@@ -1,43 +1,47 @@
 
 meta:
-  id: bitstream_altera_epm7032s
-  file-extension: bit
-  # byte-order: first-to-last
-  # bit-order: lsb-first
-
-  # imports:
-  #   - epm7000s.ksy
+  id: max7000s
 
 enums:
-  input_enable:
+  floating_gate:
     1: disabled
     0: enabled
 
 types:
+  #
+  # Configures which of a product term's input signals are enabled
+  #
   product_term:
     types:
-      global_input_enable:
+      #
+      # Selects an output signal from either the inverted
+      # or the non-inverted variant of an input signal
+      #
+      global_input:
         seq:
-          - id: normal
+          - id: enable
             type: b1
-            enum: input_enable
-          - id: inverted
+            enum: floating_gate
+          - id: enable_inverted
             type: b1
-            enum: input_enable
+            enum: floating_gate
 
     seq:
       - id: global_inputs
-        type: product_term::global_input_enable
+        type: product_term::global_input
         repeat: expr
         repeat-expr: 36
       - id: regional_foldback_enable
         type: b1
-        enum: input_enable
+        enum: floating_gate
         repeat: expr
         repeat-expr: 16
 
   product_terms:
     types:
+      #
+      # Configures all product terms in a macrocell
+      #
       macrocell:
         seq:
           - id: product_terms
@@ -45,6 +49,9 @@ types:
             repeat: expr
             repeat-expr: 5
 
+      #
+      # Configures all product terms in a LAB
+      #
       lab:
         seq:
           - id: macrocells
@@ -52,13 +59,9 @@ types:
             repeat: expr
             repeat-expr: 16
 
-      epm7032s:
-        seq:
-          - id: labs
-            type: product_terms::lab
-            repeat: expr
-            repeat-expr: 2
-
+  #
+  # Configures the behaviour of a macrocell
+  #
   macrocell:
     # 13 bits
     seq:
@@ -79,42 +82,43 @@ types:
       - id: global_clock_enable
         type: b2
 
+  #
+  # Configures all macrocells in one LAB
+  #
   macrocells:
     types:
-      epm7032s:
-        seq:
-          - id: macrocell
-            type: macrocell
-            repeat: expr
-            repeat-expr: 2*16
+      - id: lab
+        type: macrocell
+        repeat: expr
+        repeat-expr: 16
 
-  lab_signals:
+  #
+  # Selects one LAB signal out of four PIA signals
+  #
+  lab_router:
+    seq:
+      - id: input_enable
+        type: b1
+        enum: floating_gate
+        repeat: expr
+        repeat-expr: 4
+
+  #
+  # Selects all regional signals within a LAB
+  # from all available PIA signals
+  #
+  lab_routers:
     types:
-      signal:
-        # selectable from 4 global signals
-        seq:
-          - id: input_enable
-            type: b1
-            enum: input_enable
-            repeat: expr
-            repeat-expr: 4
-    
-      lab:
-        # 36 signals from global routing pool
-        seq:
-          - id: signals
-            type: lab_signals::signal
-            repeat: expr
-            repeat-expr: 36
+      - id: lab
+        type: lab_router
+        repeat: expr
+        repeat-expr: 36
 
-      epm7032s:
-        seq:
-          - id: labs
-            type: lab_signals::lab
-            repeat: expr
-            repeat-expr: 2
 
   output_enable_signals:
+    enums:
+      - id:
+
     types:
       global_output_enable:
         seq:
@@ -123,19 +127,13 @@ types:
             repeat: expr
             repeat-expr: 5
 
-      epm7032s:
-        seq:
-          - id: output_enable
-            type: output_enable_signals::global_output_enable
-            repeat: expr
-            repeat-expr: 6
 
   io:
     enums:
       slew_rate:
         1: slow
         0: fast
-  
+
     types:
       iob:
         seq:
@@ -150,7 +148,7 @@ types:
             type: b1
             repeat: expr
             repeat-expr: 2
-    
+
       epm7032s:
         seq:
           - id: iob
@@ -165,16 +163,3 @@ types:
         repeat: expr
         repeat-expr: 4
 
-seq:
-  - id: product_terms
-    type: product_terms::epm7032s
-  - id: macrocells
-    type: macrocells::epm7032s
-  - id: lab_signals
-    type: lab_signals::epm7032s
-  - id: output_enable_signals
-    type: output_enable_signals::epm7032s
-  - id: io
-    type: io::epm7032s
-  - id: usercode
-    type: usercode
